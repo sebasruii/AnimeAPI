@@ -9,7 +9,7 @@ public interface AnimeRepository {
 	
 	//Review
 	public void addReview(String animeId, Review r);
-	public Review getReviewsUser();  //OJO
+	public Review getReviewsUser(String user,Integer year);  //OJO
 	public void updateReview(Review r);
 	public void deleteReview(String animeId, Review reviewId);
 	
