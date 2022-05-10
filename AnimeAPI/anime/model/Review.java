@@ -5,6 +5,7 @@ import java.time.LocalDate;
 public class Review {
 	private String id;
     private String idAnime;
+    private String user;
     private String comment;
     private Integer rating;
     private LocalDate date;
@@ -70,6 +71,15 @@ public class Review {
 	public void setIdAnime(String idAnime) {
 		this.idAnime = idAnime;
 	}
+
+	public String getUser() {
+		return user;
+	}
+
+	public void setUser(String user) {
+		this.user = user;
+	}
+	
 	
 
 }
