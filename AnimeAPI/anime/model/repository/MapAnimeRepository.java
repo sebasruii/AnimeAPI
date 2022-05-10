@@ -5,7 +5,6 @@ import java.util.Map;
 
 import anime.model.Anime;
 import anime.model.Review;
-import src.main.java.api.model.repository.MapAnimeRepository;
 
 public class MapAnimeRepository implements AnimeRepository{
 	
@@ -22,8 +21,11 @@ public class MapAnimeRepository implements AnimeRepository{
 		
 		return instance;
 	}
+	
+	public void init() {
+		
+	}
 
-	@Override
 	public void addReview(String animeId, Review r) {
 		Anime anime = getAnime(animeId);
 		anime.addReview(r);	
@@ -35,7 +37,6 @@ public class MapAnimeRepository implements AnimeRepository{
 		return null;
 	}
 
-	@Override
 	public void updateReview(Review r) {
 		Review review = r;
 		review.setComment(r.getComment());
@@ -43,46 +44,35 @@ public class MapAnimeRepository implements AnimeRepository{
 		review.setDate(r.getDate());
 	}
 
-	@Override
 	public void deleteReview(String animeId, Review reviewId) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void addAnime(Anime a) {
-		// TODO Auto-generated method stub
-		
+		String id = "a" + index++;
+		a.setId(id);
+		animeMap.put(id, a);		
 	}
 
-	@Override
 	public Collection<Anime> getAllAnime() {
-		// TODO Auto-generated method stub
-		return null;
+		return animeMap.values();
 	}
 
-	@Override
 	public Anime getAnime(String animeId) {
-		// TODO Auto-generated method stub
-		return null;
+		return animeMap.get(animeId);
 	}
 
-	@Override
 	public void updateAnime(Anime a) {
-		// TODO Auto-generated method stub
-		
+		animeMap.put(a.getId(), a);
 	}
 
-	@Override
 	public void deleteAnime(String animeId) {
-		// TODO Auto-generated method stub
-		
+		animeMap.remove(animeId);
 	}
 
-	@Override
 	public Collection<Review> getAllReview(String animeId) {
-		// TODO Auto-generated method stub
-		return null;
+		return getAnime(animeId).getReviews();
 	}
 	
 	
