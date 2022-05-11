@@ -106,5 +106,17 @@ public class Anime {
 		if (r!=null)
 			reviews.remove(r);
 	}
+	
+	public Double getRating() {
+		if(this.getReviews() == null || this.getReviews().isEmpty()) {
+			return 0.;
+		}
+		
+		Double res = this.getReviews().stream()
+				.mapToDouble(r -> r.getRating().doubleValue())
+				.average().getAsDouble();
+		
+		return res;
+	}
 
 }
