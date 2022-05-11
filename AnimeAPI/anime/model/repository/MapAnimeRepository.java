@@ -137,6 +137,11 @@ public class MapAnimeRepository implements AnimeRepository{
 	public void deleteReview(Review review) {
 		reviewMap.remove(review.getId());
 	}
+
+	@Override
+	public Review getReview(String reviewId) {
+		return reviewMap.get(reviewId);
+	}
 	
 	
 

@@ -12,6 +12,7 @@ import javax.ws.rs.QueryParam;
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.core.Context;
@@ -46,11 +47,15 @@ public class ReviewResource {
 	@GET
 	@Produces("application/json")
 	public Collection<Review> get(@QueryParam("user") String user,@QueryParam("year") Integer year){
-		Review review= repository.getReviewsUser(user, year);
-		if(review==null) {
+		Collection<Review> reviews= repository.getReviewsUser(user);
+		
+		if(reviews==null) {
 			throw new NotFoundException("The reviews from "+ user+" were not found");
 		}
-		return null;
+		if(year!=null) {
+			reviews=reviews.stream().filter(r->r.getDate().getYear()==year).collect(Collectors.toList());
+		}
+		return reviews;
 	}
 	
 	@POST
@@ -60,13 +65,14 @@ public class ReviewResource {
 		if (review.getId() == null || "".equals(review.getId()))
 			throw new BadRequestException("The id of the user must not be null");
 		
-		if (review.getIdAnime()!=null|| "".equals(review.getIdAnime()))
+		if (review.getIdAnime()==null|| "".equals(review.getIdAnime())
+				||repository.getAnime(review.getIdAnime())==null)
 			throw new BadRequestException("The animeid property is not editable.");
 		
-		if (review.getRating()!=null)
+		if (review.getRating()==null)
 			throw new BadRequestException("The rating must not be null.");
 
-		repository.addReview(review.getIdAnime(), review);
+		repository.addReview(review);
 
 		
 		UriBuilder ub = uriInfo.getAbsolutePathBuilder().path(this.getClass(), "get");
@@ -83,7 +89,7 @@ public class ReviewResource {
 	@Consumes("application/json")
 	public Response updateReview(@PathParam("reviewId") String reviewId,Review review) {
 		
-		Review oldReview= repository.getReviewsUser(reviewId, null);
+		Review oldReview= repository.getReviewsUser(reviewId);
 		
 		if(oldReview==null) {
 			throw new NotFoundException("The reviews from "+ reviewId+" were not found");
