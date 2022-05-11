@@ -12,6 +12,9 @@ import javax.ws.rs.QueryParam;
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ws.rs.Consumes;
@@ -22,6 +25,8 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import org.jboss.resteasy.spi.BadRequestException;
 import org.jboss.resteasy.spi.NotFoundException;
 
+import anime.api.resources.comparators.ComparatorRating;
+import anime.api.resources.comparators.ComparatorRatingReversed;
 import anime.model.Review;
 import anime.model.repository.AnimeRepository;
 import anime.model.repository.MapAnimeRepository;
@@ -124,11 +129,20 @@ public class ReviewResource {
 	@GET
 	@Path("/{animeId}")
 	@Produces("application/json")
-	public Collection<Review> getAll(@PathParam("animeId") String animeId)
+	public Collection<Review> getAll(@PathParam("animeId") String animeId,@QueryParam("order") String order)
 	{
-		return repository.getAllReview(animeId);
+		List<Review> result = (List<Review>) repository.getAllReview(animeId);
 		
-		
+		if(order != null) {
+			if(order.equals("positivos")) {
+				Collections.sort(result, new ComparatorRatingReversed());
+			}else if(order.equals("negativos")) {
+				Collections.sort(result, new ComparatorRating());
+			}else {
+				throw new BadRequestException("The order parameter must be 'positivo' or 'negativo'.");
+			}
+		}
+		return result;
 	}
 	
 }
