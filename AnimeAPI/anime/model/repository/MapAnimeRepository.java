@@ -32,7 +32,7 @@ public class MapAnimeRepository implements AnimeRepository{
 	}
 
 	@Override
-	public Review getReviewsUser() {
+	public Review getReviewsUser(String user,Integer year) {
 		// TODO Auto-generated method stub
 		return null;
 	}
