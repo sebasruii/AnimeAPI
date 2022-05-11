@@ -11,7 +11,7 @@ public interface AnimeRepository {
 	public void addReview(String animeId, Review r);
 	public Review getReviewsUser(String user,Integer year);  //OJO
 	public void updateReview(Review r);
-	public void deleteReview(String animeId, Review reviewId);
+	public void deleteReview(String animeId, Review reviewId);//Ojo el reviewId
 	
 	
 	//Anime
