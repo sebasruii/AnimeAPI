@@ -10,6 +10,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
 import java.net.URI;
+import java.time.LocalDate;
 import java.util.Collection;
 
 import javax.ws.rs.Consumes;
@@ -82,29 +83,22 @@ public class ReviewResource {
 	@PUT
 	@Path("/{reviewId}")
 	@Consumes("application/json")
-	public Response updateReview(@PathParam("reviewId") String reviewId) {
+	public Response updateReview(@PathParam("reviewId") String reviewId,Review review) {
 		
 		Review oldReview= repository.getReviewsUser(reviewId, null);
 		
 		if(oldReview==null) {
 			throw new NotFoundException("The reviews from "+ reviewId+" were not found");
 		}
-		/*
-		// Update id
-		if(r.getId()!=null)
-			oldReview.setId(null);
-		*/
-		//Se modifica el id, animeId y el date ?Pregunta
-		
-		// Update Rating
-		/*if(r.getRating()!=null)
-			oldReview.setRating(r.getRating());
+		//Update Rating
+		if(review.getRating()!=null)
+			oldReview.setRating(review.getRating());
 		
 		// Update comment
-		if(r.getComment()!=null)
-			oldReview.setComment(r.getComment());
+		if(review.getComment()!=null)
+			oldReview.setComment(review.getComment());
 		
-		*/
+		oldReview.setDate(LocalDate.now());
 		
 		return Response.noContent().build();
 	}
