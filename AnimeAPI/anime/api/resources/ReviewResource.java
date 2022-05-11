@@ -27,6 +27,8 @@ import org.jboss.resteasy.spi.NotFoundException;
 
 import anime.api.resources.comparators.ComparatorRating;
 import anime.api.resources.comparators.ComparatorRatingReversed;
+import anime.api.resources.comparators.ComparatorRatingReview;
+import anime.api.resources.comparators.ComparatorRatingReviewReversed;
 import anime.model.Review;
 import anime.model.repository.AnimeRepository;
 import anime.model.repository.MapAnimeRepository;
@@ -135,9 +137,9 @@ public class ReviewResource {
 		
 		if(order != null) {
 			if(order.equals("positivos")) {
-				Collections.sort(result, new ComparatorRatingReversed());
+				Collections.sort(result, new ComparatorRatingReviewReversed());
 			}else if(order.equals("negativos")) {
-				Collections.sort(result, new ComparatorRating());
+				Collections.sort(result, new ComparatorRatingReview());
 			}else {
 				throw new BadRequestException("The order parameter must be 'positivo' or 'negativo'.");
 			}
