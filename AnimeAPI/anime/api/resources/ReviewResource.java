@@ -12,6 +12,7 @@ import javax.ws.rs.QueryParam;
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.core.Context;
@@ -46,10 +47,13 @@ public class ReviewResource {
 	@GET
 	@Produces("application/json")
 	public Collection<Review> get(@QueryParam("user") String user,@QueryParam("year") Integer year){
-		Collection<Review> reviews= repository.getReviewsUser(user, year);
+		Collection<Review> reviews= repository.getReviewsUser(user);
 		
 		if(reviews==null) {
 			throw new NotFoundException("The reviews from "+ user+" were not found");
+		}
+		if(year!=null) {
+			reviews=reviews.stream().filter(r->r.getDate().getYear()==year).collect(Collectors.toList());
 		}
 		return reviews;
 	}
@@ -68,7 +72,7 @@ public class ReviewResource {
 		if (review.getRating()==null)
 			throw new BadRequestException("The rating must not be null.");
 
-		repository.addReview(review.getIdAnime(), review);
+		repository.addReview(review);
 
 		
 		UriBuilder ub = uriInfo.getAbsolutePathBuilder().path(this.getClass(), "get");
@@ -85,7 +89,7 @@ public class ReviewResource {
 	@Consumes("application/json")
 	public Response updateReview(@PathParam("reviewId") String reviewId,Review review) {
 		
-		Review oldReview= repository.getReviewsUser(reviewId, null);
+		Review oldReview= repository.getReviewsUser(reviewId);
 		
 		if(oldReview==null) {
 			throw new NotFoundException("The reviews from "+ reviewId+" were not found");

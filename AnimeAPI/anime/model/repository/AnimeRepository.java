@@ -9,9 +9,11 @@ public interface AnimeRepository {
 	
 	//Review
 	public void addReview(Review r);
+	public Review getReview(String reviewId);
 	public Collection<Review> getReviewsUser(String user);  //OJO
 	public void updateReview(Review review);
 	public void deleteReview(Review review);//Ojo el reviewId
+	
 	
 	
 	//Anime
