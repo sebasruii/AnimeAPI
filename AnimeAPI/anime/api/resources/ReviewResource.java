@@ -69,12 +69,13 @@ public class ReviewResource {
 	@Consumes("application/json")
 	@Produces("application/json")
 	public Response addReview(@Context UriInfo uriInfo, Review review) {
-		if (review.getId() == null || "".equals(review.getId()))
-			throw new BadRequestException("The id of the user must not be null");
+		
+		if (review.getUser() == null || "".equals(review.getUser()))
+			throw new BadRequestException("The user  must not be null");
 		
 		if (review.getIdAnime()==null|| "".equals(review.getIdAnime())
 				||repository.getAnime(review.getIdAnime())==null)
-			throw new BadRequestException("The animeid property is not editable.");
+			throw new BadRequestException("The animeid must not be null.");
 		
 		if (review.getRating()==null)
 			throw new BadRequestException("The rating must not be null.");
@@ -96,7 +97,7 @@ public class ReviewResource {
 	@Consumes("application/json")
 	public Response updateReview(@PathParam("reviewId") String reviewId,Review review) {
 		
-		Review oldReview= repository.getReviewsUser(reviewId);
+		Review oldReview= repository.getReview(reviewId);
 		
 		if(oldReview==null) {
 			throw new NotFoundException("The reviews from "+ reviewId+" were not found");
@@ -119,11 +120,11 @@ public class ReviewResource {
 	@DELETE
 	@Path("/{reviewId}")
 	public Response removeReview(@PathParam("reviewId") String reviewId) {
-		Review toberemoved= repository.getReviewsUser(reviewId, null);
+		Review toberemoved= repository.getReview(reviewId);
 		if (toberemoved == null)
 			throw new NotFoundException("The review with id="+ reviewId +" was not found");
 		else
-			repository.deleteReview(null, toberemoved);
+			repository.deleteReview(toberemoved);
 		
 		return Response.noContent().build();
 	}
