@@ -89,7 +89,7 @@ public class ReviewResource {
 	@Consumes("application/json")
 	public Response updateReview(@PathParam("reviewId") String reviewId,Review review) {
 		
-		Review oldReview= repository.getReviewsUser(reviewId);
+		Review oldReview= repository.getReview(reviewId);
 		
 		if(oldReview==null) {
 			throw new NotFoundException("The reviews from "+ reviewId+" were not found");
@@ -112,11 +112,11 @@ public class ReviewResource {
 	@DELETE
 	@Path("/{reviewId}")
 	public Response removeReview(@PathParam("reviewId") String reviewId) {
-		Review toberemoved= repository.getReviewsUser(reviewId, null);
+		Review toberemoved= repository.getReview(reviewId);
 		if (toberemoved == null)
 			throw new NotFoundException("The review with id="+ reviewId +" was not found");
 		else
-			repository.deleteReview(null, toberemoved);
+			repository.deleteReview(toberemoved);
 		
 		return Response.noContent().build();
 	}
