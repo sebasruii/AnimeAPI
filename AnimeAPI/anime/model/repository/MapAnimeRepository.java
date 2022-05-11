@@ -35,7 +35,7 @@ public class MapAnimeRepository implements AnimeRepository{
 		animeMap = new HashMap<String, Anime>();
 		reviewMap = new HashMap<String, Review>();
 		
-		List<Anime> animes = leerAnimes("ruta", true);   //Reemplazar ruta
+		List<Anime> animes = leerAnimes("CSVOFICIAL.csv", true);   //Reemplazar ruta
 		
 		for(Anime a : animes) {
 			addAnime(a);
