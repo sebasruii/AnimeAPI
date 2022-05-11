@@ -21,8 +21,6 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import org.jboss.resteasy.spi.BadRequestException;
 import org.jboss.resteasy.spi.NotFoundException;
 
-import aiss.model.Playlist;
-import aiss.model.Song;
 import anime.model.Review;
 import anime.model.repository.AnimeRepository;
 import anime.model.repository.MapAnimeRepository;
@@ -48,12 +46,12 @@ public class ReviewResource {
 	@GET
 	@Produces("application/json")
 	public Collection<Review> get(@QueryParam("user") String user,@QueryParam("year") Integer year){
-		Collection<Review> review= repository.getReviewsUser(user, year);
+		Collection<Review> reviews= repository.getReviewsUser(user, year);
 		
-		if(review==null) {
+		if(reviews==null) {
 			throw new NotFoundException("The reviews from "+ user+" were not found");
 		}
-		return review.;
+		return reviews;
 	}
 	
 	@POST
