@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import anime.model.Anime;
 import anime.model.Review;
@@ -79,27 +80,7 @@ public class MapAnimeRepository implements AnimeRepository{
 		return new Anime(title, anyo, temporadas, n_capitulos);
 	}
 
-	public void addReview(String animeId, Review r) {
-		Anime anime = getAnime(animeId);
-		anime.addReview(r);	
-	}
-
-	@Override
-	public Review getReviewsUser(String user,Integer year) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public void updateReview(Review r) {
-		Review review = r;
-		review.setComment(r.getComment());
-		review.setRating(r.getRating());
-		review.setDate(r.getDate());
-	}
-
-	public void deleteReview(String animeId, Review reviewId) {
-		
-	}
+	
 
 	@Override
 	public void addAnime(Anime a) {
@@ -126,6 +107,35 @@ public class MapAnimeRepository implements AnimeRepository{
 
 	public Collection<Review> getAllReview(String animeId) {
 		return getAnime(animeId).getReviews();
+	}
+
+	@Override
+	public void addReview(Review r) {
+		String id = "r" + index++;
+		r.setId(id);
+		Anime a = animeMap.get(r.getIdAnime());
+		a.addReview(r);
+		reviewMap.put(id, r);
+		
+	}
+
+	@Override
+	public Collection<Review> getReviewsUser(String user) {
+		
+		return reviewMap.values().stream()
+				.filter(r -> r.getUser().equals(user))
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public void updateReview(Review review) {
+		reviewMap.put(review.getId(), review);
+		
+	}
+
+	@Override
+	public void deleteReview(Review review) {
+		reviewMap.remove(review.getId());
 	}
 	
 	

@@ -8,10 +8,10 @@ import anime.model.Review;
 public interface AnimeRepository {
 	
 	//Review
-	public void addReview(String animeId, Review r);
-	public Review getReviewsUser(String user,Integer year);  //OJO
-	public void updateReview(Review r);
-	public void deleteReview(String animeId, Review reviewId);//Ojo el reviewId
+	public void addReview(Review r);
+	public Collection<Review> getReviewsUser(String user);  //OJO
+	public void updateReview(Review review);
+	public void deleteReview(Review review);//Ojo el reviewId
 	
 	
 	//Anime
