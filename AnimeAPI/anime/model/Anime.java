@@ -20,6 +20,13 @@ public class Anime {
 		this.titulo = titulo;
 	}
 	
+	public Anime(String titulo, String anyo, Integer temporada, Integer n_capitulos) {
+		this.titulo = titulo;
+		this.anyo = anyo;
+		this.temporada = temporada;
+		this.n_capitulos = n_capitulos;
+	}
+
 	protected void setReviews(List<Review> r) {
 		reviews = r;
 	}

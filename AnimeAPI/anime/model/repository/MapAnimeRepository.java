@@ -1,6 +1,13 @@
 package anime.model.repository;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import anime.model.Anime;
@@ -24,6 +31,52 @@ public class MapAnimeRepository implements AnimeRepository{
 	
 	public void init() {
 		
+		animeMap = new HashMap<String, Anime>();
+		reviewMap = new HashMap<String, Review>();
+		
+		List<Anime> animes = leerAnimes("ruta", true);   //Reemplazar ruta
+		
+		for(Anime a : animes) {
+			addAnime(a);
+		}
+	}
+	
+	public static List<String> leeLineas(String ruta){
+		List<String> result = new ArrayList<>();
+		
+		try {
+			result = Files.readAllLines(Paths.get(ruta));
+		} catch(IOException e){
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public List<Anime> leerAnimes(String ruta, Boolean cabecera){
+		List<Anime> coleccionAnimes = new ArrayList<Anime>();
+		List<String> lineas = leeLineas(ruta);
+		
+		if(cabecera) {
+			lineas.remove(0);
+		}
+		
+		for(String linea: lineas) {
+			Anime nuevoAnime = parsearAnime(linea);
+			coleccionAnimes.add(nuevoAnime);
+		}
+		
+		return coleccionAnimes;		
+	}
+
+	private Anime parsearAnime(String linea) {
+		String[] splits =  linea.split(",");		
+		String title = splits[0].trim();
+		String anyo = splits[1].trim();
+		Integer temporadas = Integer.valueOf(splits[2].trim());
+		Integer n_capitulos = Integer.valueOf(splits[3].trim());
+		
+		return new Anime(title, anyo, temporadas, n_capitulos);
 	}
 
 	public void addReview(String animeId, Review r) {
