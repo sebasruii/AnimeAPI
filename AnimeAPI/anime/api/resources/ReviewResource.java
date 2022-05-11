@@ -48,11 +48,12 @@ public class ReviewResource {
 	@GET
 	@Produces("application/json")
 	public Collection<Review> get(@QueryParam("user") String user,@QueryParam("year") Integer year){
-		Review review= repository.getReviewsUser(user, year);
+		Collection<Review> review= repository.getReviewsUser(user, year);
+		
 		if(review==null) {
 			throw new NotFoundException("The reviews from "+ user+" were not found");
 		}
-		return null;
+		return review.;
 	}
 	
 	@POST
@@ -62,10 +63,11 @@ public class ReviewResource {
 		if (review.getId() == null || "".equals(review.getId()))
 			throw new BadRequestException("The id of the user must not be null");
 		
-		if (review.getIdAnime()!=null|| "".equals(review.getIdAnime()))
+		if (review.getIdAnime()==null|| "".equals(review.getIdAnime())
+				||repository.getAnime(review.getIdAnime())==null)
 			throw new BadRequestException("The animeid property is not editable.");
 		
-		if (review.getRating()!=null)
+		if (review.getRating()==null)
 			throw new BadRequestException("The rating must not be null.");
 
 		repository.addReview(review.getIdAnime(), review);
