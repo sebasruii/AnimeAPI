@@ -21,8 +21,6 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import org.jboss.resteasy.spi.BadRequestException;
 import org.jboss.resteasy.spi.NotFoundException;
 
-import aiss.model.Playlist;
-import aiss.model.Song;
 import anime.model.Review;
 import anime.model.repository.AnimeRepository;
 import anime.model.repository.MapAnimeRepository;
