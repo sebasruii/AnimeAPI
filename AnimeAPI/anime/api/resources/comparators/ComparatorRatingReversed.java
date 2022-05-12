@@ -8,6 +8,6 @@ public class ComparatorRatingReversed implements Comparator<Anime>{
 	@Override
 	public int compare(Anime o1, Anime o2) {
 		
-		return o2.getRating().compareTo(o1.getRating());
+		return o2.getAverageRating().compareTo(o1.getAverageRating());
 	}
 }

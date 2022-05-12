@@ -59,9 +59,9 @@ public class AnimeResource {
 		
 			
 		for(Anime a: repository.getAllAnime()) {
-			Boolean cFecha = anyo == null || a.getAnyo().equals(anyo);
-			Boolean cFormato = formato == null || a.getTipoFormato().equals(TipoFormato.valueOf(formato));
-			Boolean cTitulo = titulo == null || a.getTitulo().contains(titulo);
+			Boolean cFecha = anyo == null || a.getYear().equals(anyo);
+			Boolean cFormato = formato == null || a.getFormat().equals(TipoFormato.valueOf(formato));
+			Boolean cTitulo = titulo == null || a.getTitle().contains(titulo);
 			
 			if(cFecha && cFormato && cTitulo) {
 				result.add(a);
@@ -85,11 +85,11 @@ public class AnimeResource {
 	@Produces("application/json")
 	public Response addAnime(@Context UriInfo uriInfo, Anime anime) {
 		
-		if(anime.getTitulo() == null || "".equals(anime.getTitulo())) {
+		if(anime.getTitle() == null || "".equals(anime.getTitle())) {
 			throw new BadRequestException("The title of the anime cannot be null");
 		}
 		
-		if(anime.getReviews() != null) {
+		if(anime.reviews() != null) {
 			throw new BadRequestException("The reviews property of the anime is not editable.");
 		}
 		repository.addAnime(anime);
@@ -126,22 +126,22 @@ public class AnimeResource {
 			throw new NotFoundException("The anime with id=" + id + " was not found.");
 		}
 		
-		if(oldAnime.getReviews()!=null) {
+		if(oldAnime.reviews()!=null) {
 			throw new BadRequestException("The reviews property of the anime is not editable.");
 		}
 		
-		if(anime.getTitulo()!=null) 
-			oldAnime.setTitulo(anime.getTitulo());
-		if(anime.getAnyo()!=null) 
-			oldAnime.setAnyo(anime.getAnyo());
-		if(anime.getN_capitulos()!=null) 
-			oldAnime.setN_capitulos(anime.getN_capitulos());
-		if(anime.getTemporada()!=null) 
-			oldAnime.setTemporada(anime.getTemporada());
-		if(anime.getTipoFormato()!=null) 
-			oldAnime.setTipoFormato(anime.getTipoFormato());
-		if(anime.getTemporada()!=null) 
-			oldAnime.setTemporada(anime.getTemporada());
+		if(anime.getTitle()!=null) 
+			oldAnime.setTitle(anime.getTitle());
+		if(anime.getYear()!=null) 
+			oldAnime.setYear(anime.getYear());
+		if(anime.getNumberOfEspisodes()!=null) 
+			oldAnime.setNumberOfEpisodes(anime.getNumberOfEspisodes());
+		if(anime.getSeasons()!=null) 
+			oldAnime.setSeasons(anime.getSeasons());
+		if(anime.getFormat()!=null) 
+			oldAnime.setFormat(anime.getFormat());
+		if(anime.getSeasons()!=null) 
+			oldAnime.setSeasons(anime.getSeasons());
 		
 		return Response.noContent().build();
 

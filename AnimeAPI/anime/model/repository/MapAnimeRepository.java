@@ -106,7 +106,7 @@ public class MapAnimeRepository implements AnimeRepository{
 	}
 
 	public Collection<Review> getAllReview(String animeId) {
-		return getAnime(animeId).getReviews();
+		return getAnime(animeId).reviews();
 	}
 
 	@Override

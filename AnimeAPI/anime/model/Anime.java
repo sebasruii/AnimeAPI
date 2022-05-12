@@ -7,24 +7,33 @@ import java.util.List;
 public class Anime {
 	
 	private String id;
-	private String titulo;
-	private String anyo;
-	private Integer temporada;
-	private Integer n_capitulos;
-	private TipoFormato formato;
+	private String title;
+	private String year;
+	private Integer seasons;
+	private Integer numberOfEpisodes;
+	private TipoFormato format;
 	private List<Review> reviews;
 	
-	public Anime() {}
+	public Anime() {
+		this.reviews = new ArrayList<Review>();
+	}
 	
 	public Anime(String titulo) {
-		this.titulo = titulo;
+		this();
+		this.title = titulo;
 	}
 	
 	public Anime(String titulo, String anyo, Integer temporada, Integer n_capitulos) {
-		this.titulo = titulo;
-		this.anyo = anyo;
-		this.temporada = temporada;
-		this.n_capitulos = n_capitulos;
+		this();
+		this.title = titulo;
+		this.year = anyo;
+		this.seasons = temporada;
+		this.numberOfEpisodes = n_capitulos;
+		if(n_capitulos.equals(1)) {
+			this.format = TipoFormato.FILM;
+		} else {
+			this.format = TipoFormato.SERIES;
+		}
 	}
 
 	protected void setReviews(List<Review> r) {
@@ -39,52 +48,52 @@ public class Anime {
 		this.id = id;
 	}
 	
-	public String getTitulo() {
-		return titulo;
+	public String getTitle() {
+		return title;
 	}
 	
-	public void setTitulo(String titulo) {
-		this.titulo = titulo;
+	public void setTitle(String titulo) {
+		this.title = titulo;
 	}
 	
-	public String getAnyo() {
-		return anyo;
+	public String getYear() {
+		return year;
 	}
 	
-	public void setAnyo(String anyo) {
-		this.anyo = anyo;
+	public void setYear(String anyo) {
+		this.year = anyo;
 	}
 	
-	public Integer getTemporada() {
-		return temporada;
+	public Integer getSeasons() {
+		return seasons;
 	}
 	
-	public void setTemporada(Integer temporada) {
-		this.temporada = temporada;
+	public void setSeasons(Integer temporada) {
+		this.seasons = temporada;
 	}
 	
-	public Integer getN_capitulos() {
-		return n_capitulos;
+	public Integer getNumberOfEspisodes() {
+		return numberOfEpisodes;
 	}
 	
-	public void setN_capitulos(Integer n_capitulos) {
-		this.n_capitulos = n_capitulos;
+	public void setNumberOfEpisodes(Integer n_capitulos) {
+		this.numberOfEpisodes = n_capitulos;
 	}
 	
-	public TipoFormato getTipoFormato() {
-		return formato;
+	public TipoFormato getFormat() {
+		return format;
 	}
 	
-	public void setTipoFormato(TipoFormato formato) {
-		this.formato = formato;
+	public void setFormat(TipoFormato formato) {
+		this.format = formato;
 	}
 	
-	public List<Review> getReviews() {
+	public List<Review> reviews() {
 		return reviews;
 	}
 	
 	public Review getReview(String id) {
-		if (reviews==null)
+		if (reviews==null || reviews.isEmpty())
 			return null;
 		
 		Review review =null;
@@ -114,12 +123,12 @@ public class Anime {
 			reviews.remove(r);
 	}
 	
-	public Double getRating() {
-		if(this.getReviews() == null || this.getReviews().isEmpty()) {
+	public Double getAverageRating() {
+		if(this.reviews() == null || this.reviews().isEmpty()) {
 			return 0.;
 		}
 		
-		Double res = this.getReviews().stream()
+		Double res = this.reviews().stream()
 				.mapToDouble(r -> r.getRating().doubleValue())
 				.average().getAsDouble();
 		

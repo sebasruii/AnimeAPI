@@ -1,5 +1,5 @@
 package anime.model;
 
 public enum TipoFormato {
-	PELICULA, SERIE;
+	FILM, SERIES;
 }
