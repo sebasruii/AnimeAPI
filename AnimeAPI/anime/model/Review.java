@@ -12,7 +12,16 @@ public class Review {
 
     public Review() {}
 
-    public Review(String comment, Integer rating, LocalDate date) {
+    public Review(String idAnime, String user, String comment, Integer rating, LocalDate date) {
+		this.idAnime = idAnime;
+		this.user = user;
+		this.comment = comment;
+		this.rating = rating;
+		this.date = date;
+	}
+    
+
+	public Review(String comment, Integer rating, LocalDate date) {
         this.comment = comment;
         this.rating = rating;
         this.date = date;

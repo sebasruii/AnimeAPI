@@ -4,12 +4,14 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
 
 import anime.model.Anime;
 import anime.model.Review;
@@ -36,9 +38,14 @@ public class MapAnimeRepository implements AnimeRepository{
 		reviewMap = new HashMap<String, Review>();
 		
 		List<Anime> animes = leerAnimes("CSVOFICIAL.csv", true);   //Reemplazar ruta
+		List<Review> reviews = leerReview("ReviewsOficial.csv", true);
 		
 		for(Anime a : animes) {
 			addAnime(a);
+		}
+		
+		for(Review r: reviews) {
+			addReview(r);
 		}
 	}
 	
@@ -79,6 +86,35 @@ public class MapAnimeRepository implements AnimeRepository{
 		
 		return new Anime(title, anyo, temporadas, n_capitulos);
 	}
+	
+	public List<Review> leerReview(String ruta, Boolean cabecera){
+		List<Review> coleccionReviews = new ArrayList<Review>();
+		List<String> lineas = leeLineas(ruta);
+		
+		if(cabecera) {
+			lineas.remove(0);
+		}
+		
+		for(String linea: lineas) {
+			Review nuevoAnime = parsearReview(linea);
+			coleccionReviews.add(nuevoAnime);
+		}
+		
+		return coleccionReviews;		
+	}
+	
+	private Review parsearReview(String linea) {
+		String[] splits =  linea.split(",");		
+		
+		String idAnime = splits[0].trim();
+		String user = splits[1].trim();
+		String comment = splits[3].trim();
+		Integer rating = Integer.valueOf(splits[2].trim());
+		LocalDate date = LocalDate.now();
+		
+		return new Review(idAnime, user, comment, rating, date);
+	}
+	
 
 	
 
