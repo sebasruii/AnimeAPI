@@ -73,9 +73,9 @@ public class AnimeResource {
 				
 		if(order !=null) {
 			if(order.equals("rating")) {
-				Collections.sort(result, new ComparatorRating());
-			} else if(order.equals("rating-")) {
 				Collections.sort(result, new ComparatorRatingReversed());
+			} else if(order.equals("rating-")) {
+				Collections.sort(result, new ComparatorRating());
 			} else {
 				throw new BadRequestException("the order must be 'rating' or 'rating-'");
 			}
@@ -145,8 +145,8 @@ public class AnimeResource {
 			oldAnime.setTitle(anime.getTitle());
 		if(anime.getYear()!=null) 
 			oldAnime.setYear(anime.getYear());
-		if(anime.getNumberOfEspisodes()!=null) 
-			oldAnime.setNumberOfEpisodes(anime.getNumberOfEspisodes());
+		if(anime.getNumberOfEpisodes()!=null) 
+			oldAnime.setNumberOfEpisodes(anime.getNumberOfEpisodes());
 		if(anime.getSeasons()!=null) 
 			oldAnime.setSeasons(anime.getSeasons());
 		if(anime.getFormat()!=null) 

@@ -73,7 +73,7 @@ public class Anime {
 		this.seasons = temporada;
 	}
 	
-	public Integer getNumberOfEspisodes() {
+	public Integer getNumberOfEpisodes() {
 		return numberOfEpisodes;
 	}
 	

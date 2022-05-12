@@ -13,7 +13,6 @@ import java.net.URI;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,8 +24,6 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import org.jboss.resteasy.spi.BadRequestException;
 import org.jboss.resteasy.spi.NotFoundException;
 
-import anime.api.resources.comparators.ComparatorRating;
-import anime.api.resources.comparators.ComparatorRatingReversed;
 import anime.api.resources.comparators.ComparatorRatingReview;
 import anime.api.resources.comparators.ComparatorRatingReviewReversed;
 import anime.model.Review;
@@ -53,8 +50,9 @@ public class ReviewResource {
 	
 	@GET
 	@Produces("application/json")
-	public Collection<Review> get(@QueryParam("user") String user,@QueryParam("year") Integer year){
-		Collection<Review> reviews= repository.getReviewsUser(user);
+	public Collection<Review> getAll(@QueryParam("user") String user,@QueryParam("year") Integer year,
+			@QueryParam("animeId") String animeId,@QueryParam("order") String order){
+		List<Review> reviews= (List<Review>) repository.getReviewsUser(user);
 		
 		if(reviews==null) {
 			throw new NotFoundException("The reviews from "+ user+" were not found");
@@ -62,6 +60,20 @@ public class ReviewResource {
 		if(year!=null) {
 			reviews=reviews.stream().filter(r->r.getDate().getYear()==year).collect(Collectors.toList());
 		}
+		if(animeId!=null) {
+			reviews=reviews.stream().filter(r->r.getIdAnime().equals(animeId)).collect(Collectors.toList());
+		}
+		
+		if(order != null) {
+			if(order.equals("positivos")) {
+				Collections.sort(reviews, new ComparatorRatingReviewReversed());
+			}else if(order.equals("negativos")) {
+				Collections.sort(reviews, new ComparatorRatingReview());
+			}else {
+				throw new BadRequestException("The order parameter must be 'positivo' or 'negativo'.");
+			}
+		}
+		
 		return reviews;
 	}
 	
@@ -130,22 +142,14 @@ public class ReviewResource {
 	}
 	
 	@GET
-	@Path("/{animeId}")
+	@Path("/{reviewId}")
 	@Produces("application/json")
-	public Collection<Review> getAll(@PathParam("animeId") String animeId,@QueryParam("order") String order)
+	public Review get(@PathParam("reviewId") String reviewId)
 	{
-		List<Review> result = (List<Review>) repository.getAllReview(animeId);
-		
-		if(order != null) {
-			if(order.equals("positivos")) {
-				Collections.sort(result, new ComparatorRatingReviewReversed());
-			}else if(order.equals("negativos")) {
-				Collections.sort(result, new ComparatorRatingReview());
-			}else {
-				throw new BadRequestException("The order parameter must be 'positivo' or 'negativo'.");
-			}
-		}
-		return result;
+		Review review = repository.getReview(reviewId);
+		if(review==null)
+			throw new NotFoundException("The review with id="+ reviewId +" was not found");
+		return review;
 	}
 	
 }
