@@ -137,10 +137,6 @@ public class AnimeResource {
 			throw new NotFoundException("The anime with id=" + id + " was not found.");
 		}
 		
-		if(oldAnime.reviews()!=null) {
-			throw new BadRequestException("The reviews property of the anime is not editable.");
-		}
-		
 		if(anime.getTitle()!=null) 
 			oldAnime.setTitle(anime.getTitle());
 		if(anime.getYear()!=null) 
