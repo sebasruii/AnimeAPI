@@ -149,6 +149,7 @@ public class MapAnimeRepository implements AnimeRepository{
 	public void addReview(Review r) {
 		String id = "r" + index++;
 		r.setId(id);
+		r.setDate(LocalDate.now());
 		Anime a = animeMap.get(r.getIdAnime());
 		a.addReview(r);
 		reviewMap.put(id, r);
