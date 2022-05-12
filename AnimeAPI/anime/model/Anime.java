@@ -125,16 +125,24 @@ public class Anime {
 	}
 	
 	public Double getAverageRating() {
-		if(this.reviews() == null || this.reviews().isEmpty()) {
-			return 0.;
-		}
-		
-		Double res = this.reviews().stream()
-				.mapToDouble(r -> r.getRating().doubleValue())
-				.average().getAsDouble();
-		
-		return  res;
-	}
+
+        if(this.reviews() == null || this.reviews().isEmpty()) {
+            return 0.0;
+        }
+
+        Integer count = 0;
+        Integer sum = 0;
+
+        for(Review r: reviews) {
+            sum += r.getRating();
+            count +=1;
+        }
+
+        Double promedio = (double) sum/count ;
+        Double prom = Math.round(promedio * 100) / 100d;
+
+        return prom;
+    }
 
 
 }
