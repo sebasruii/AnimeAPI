@@ -1,5 +1,6 @@
 package anime.model;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -132,7 +133,9 @@ public class Anime {
 				.mapToDouble(r -> r.getRating().doubleValue())
 				.average().getAsDouble();
 		
-		return res;
+		DecimalFormat df= new DecimalFormat("#.#") ;
+		return  Double.valueOf(df.format(res));
 	}
+
 
 }
