@@ -55,16 +55,16 @@ public class AnimeResource {
 	
 	@GET
 	@Produces("application/json")
-	public Collection<Anime> getAll(@QueryParam("anyo") String anyo, @QueryParam("formato") String formato,
-			@QueryParam("titulo") String titulo, @QueryParam("order") String order,
+	public Collection<Anime> getAll(@QueryParam("year") String year, @QueryParam("format") String format,
+			@QueryParam("title") String title, @QueryParam("order") String order,
 			@QueryParam("limit") Integer limit, @QueryParam("offset") Integer offset){
 		List<Anime> result = new ArrayList<Anime>();
 		
 			
 		for(Anime a: repository.getAllAnime()) {
-			Boolean cFecha = anyo == null || a.getYear().equals(anyo);
-			Boolean cFormato = formato == null || a.getFormat().equals(TipoFormato.valueOf(formato));
-			Boolean cTitulo = titulo == null || a.getTitle().contains(titulo);
+			Boolean cFecha = year == null || a.getYear().equals(year);
+			Boolean cFormato = format == null || a.getFormat().equals(TipoFormato.valueOf(format));
+			Boolean cTitulo = title == null || a.getTitle().contains(title);
 			
 			if(cFecha && cFormato && cTitulo) {
 				result.add(a);
