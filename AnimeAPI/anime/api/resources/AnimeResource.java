@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -54,7 +56,8 @@ public class AnimeResource {
 	@GET
 	@Produces("application/json")
 	public Collection<Anime> getAll(@QueryParam("anyo") String anyo, @QueryParam("formato") String formato,
-			@QueryParam("titulo") String titulo, @QueryParam("order") String order){
+			@QueryParam("titulo") String titulo, @QueryParam("order") String order,
+			@QueryParam("limit") Integer limit, @QueryParam("offset") Integer offset){
 		List<Anime> result = new ArrayList<Anime>();
 		
 			
@@ -77,6 +80,14 @@ public class AnimeResource {
 				throw new BadRequestException("the order must be 'rating' or 'rating-'");
 			}
 		}
+		
+		if(offset != null)
+			result = result.subList(offset + 1, result.size());
+			
+		if(limit != null)
+			result = result.stream().limit(limit).collect(Collectors.toList());
+		
+		
 		return result;
 	}
 	
