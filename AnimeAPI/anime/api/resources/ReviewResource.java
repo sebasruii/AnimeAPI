@@ -51,17 +51,21 @@ public class ReviewResource {
 	@GET
 	@Produces("application/json")
 	public Collection<Review> getAll(@QueryParam("user") String user,@QueryParam("year") Integer year,
-			@QueryParam("animeId") String animeId,@QueryParam("order") String order){
-		List<Review> reviews= (List<Review>) repository.getReviewsUser(user);
+			@QueryParam("idAnime") String idAnime,@QueryParam("order") String order){
+		if(idAnime==null) {
+			throw new BadRequestException("The idAnime parameter must not be null.");
+		}
+		
+		List<Review> reviews= (List<Review>) repository.getAllReview(idAnime);
 		
 		if(reviews==null) {
-			throw new NotFoundException("The reviews from "+ user+" were not found");
+			throw new NotFoundException("The reviews from the anime with idAnime="+ idAnime+" were not found");
 		}
 		if(year!=null) {
 			reviews=reviews.stream().filter(r->r.getDate().getYear()==year).collect(Collectors.toList());
 		}
-		if(animeId!=null) {
-			reviews=reviews.stream().filter(r->r.getIdAnime().equals(animeId)).collect(Collectors.toList());
+		if(user!=null) {
+			reviews=reviews.stream().filter(r->r.getUser().equals(user)).collect(Collectors.toList());
 		}
 		
 		if(order != null) {
