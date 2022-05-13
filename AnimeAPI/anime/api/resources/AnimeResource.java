@@ -100,9 +100,6 @@ public class AnimeResource {
 			throw new BadRequestException("The title of the anime cannot be null");
 		}
 		
-		if(anime.reviews() != null) {
-			throw new BadRequestException("The reviews property of the anime is not editable.");
-		}
 		repository.addAnime(anime);
 		
 		
