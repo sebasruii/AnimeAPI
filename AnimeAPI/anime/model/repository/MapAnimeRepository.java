@@ -172,6 +172,7 @@ public class MapAnimeRepository implements AnimeRepository{
 
 	@Override
 	public void deleteReview(Review review) {
+		animeMap.get(review.getIdAnime()).deleteReview(review);
 		reviewMap.remove(review.getId());
 	}
 
