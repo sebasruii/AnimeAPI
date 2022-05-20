@@ -1,0 +1,408 @@
+openapi: 3.0.0
+servers:
+  - url: https://anime-api7.appspot.com/v1
+  - url: http://localhost:8089/api
+    description: servidor ejecutado en local
+info:
+  description: AnimeAPI es una API que permite consultar información sobre animes y reseñas 
+  version: 1.0.0
+  title: AnimeAPI
+tags:
+  - name: Animes
+    description: Animes
+  - name: Reviews
+    description: Reviews
+paths:
+  /animes:
+    get:
+      tags:
+        - Animes
+      summary: Obtener datos de animes
+      description: Obtiene datos de animes. Soporta parámetros de filtrado, ordenación y paginación.
+      operationId: getAll
+      parameters:
+        - name: year
+          in: query
+          description: Año de estreno
+          required: false
+          schema:
+            type: integer
+            format: int32
+            
+        - name: title
+          in: query
+          description: Filtro por título
+          required: false
+          schema:
+            type: string
+        - name: format
+          in: query
+          description: Filtro por formato
+          required: false
+          schema:
+            type: string
+            enum: 
+              - SERIES
+              - FILM
+        - name: order
+          in: query
+          description: Ordenación por averageRating
+          required: false
+          schema:
+            type: string
+            enum:
+              - rating
+              - 'rating-'
+        - name: limit
+          in: query
+          description:  Máximo número de resultados
+          required: false
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+        - name: offset
+          in: query
+          description: Paginación de resultados
+          required: false
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+      responses:
+        '200':
+          description: Resultados de búsqueda
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Anime'
+        '400':
+          description: Bad request
+    post:
+      tags:
+        - Animes
+      summary: Crear un Anime
+      description: Crea un nuevo anime.
+      operationId: addAnime
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/addAnime'
+        description: Anime a crear
+        required: true
+      responses:
+        '201':
+          description: Anime creado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Anime'
+        '400':
+          description: Bad request
+  '/animes/{idAnime}':
+    get:
+      tags:
+        - Animes
+      summary: Obtener datos de un anime 
+      description: Obtener los datos del anime especificado en la ruta.
+      operationId: get
+      parameters:
+        - name: idAnime
+          in: path
+          description: idAnime
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Resultados de búsqueda
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Anime'
+                
+        '404':
+          description: Anime no encontrado
+    delete:
+      tags:
+        - Animes
+      summary: Eliminar un anime
+      description: Eliminar el anime con idAnime especificado en la ruta
+      operationId: removeAnime
+      parameters:
+        - name: idAnime
+          in: path
+          description: Id del Anime
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Anime eliminado
+        '404':
+          description: Anime no encontrado
+    put:
+      tags:
+          - Animes
+      summary: Actualizar un anime
+      description: Actualizar los datos con idAnime especificado en la ruta
+      operationId: updateAnime
+      parameters:
+        - name: idAnime
+          in: path
+          description: Id del Anime
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/addAnime'
+      responses:
+        '204':
+          description: Anime actualizado
+        '404':
+          description: Anime no encontrado
+  /animes/reviews:
+    get:
+      tags:
+        - Reviews
+      summary: Obtener datos de reseñas
+      description: Obtiene datos de reseñas. Soporta parámetros de filtrado y ordenación.
+      operationId: getAllReviews
+      parameters:
+        - name: idAnime
+          in: query
+          description: Filtro por idAnime
+          required: true
+          schema:
+            type: string
+        - name: user
+          in: query
+          description: Filtro por nombre de usuario
+          required: false
+          schema:
+            type: string
+            
+        - name: year
+          in: query
+          description: Filtro por año de publicacion
+          required: false
+          schema:
+            type: integer
+        - name: order
+          in: query
+          description: Ordenación por comentarios positivos o negativos
+          required: false
+          schema:
+            type: string
+            enum:
+              - positivos
+              - negativos
+      responses:
+        '200':
+          description: Resultados de búsqueda
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Review'
+        '400':
+          description: Bad request
+        '404':
+          description: Reseñas no encontradas
+    post:
+      tags:
+        - Reviews
+      summary: Crear una reseña
+      description: Crea una nueva reseña.
+      operationId: addReview
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/addReview'
+        description: Reseña a crear
+        required: true
+      responses:
+        '201':
+          description: Reseña creada correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+        '400':
+          description: Bad request
+  '/animes/reviews/{reviewId}':
+    get:
+      tags:
+        - Reviews
+      summary: Obtener datos de una reseña 
+      description: Obtener los datos de la reseña especificada en la ruta.
+      operationId: getReview
+      parameters:
+        - name: reviewId
+          in: path
+          description: reviewId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Resultados de búsqueda
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+                
+        '404':
+          description: Reseña no encontrada
+    delete:
+      tags:
+        - Reviews
+      summary: Eliminar una reseña
+      description: Eliminar la reseña con reviewId especificado en la ruta
+      operationId: removeReview
+      parameters:
+        - name: reviewId
+          in: path
+          description: Id de la reseña
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Reseña eliminada
+        '404':
+          description: Reseña no encontrada
+    put:
+      tags:
+          - Reviews
+      summary: Actualizar una reseña
+      description: Actualiza los datos de la reseña con reviewId especificado en la ruta
+      operationId: updateReview
+      parameters:
+        - name: reviewId
+          in: path
+          description: Id de la reseña
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateReview'
+      responses:
+        '204':
+          description: Reseña actualizada
+        '404':
+          description: Reseña no encontrada
+components:
+  schemas:
+    Anime:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        year:
+          type: string
+        seasons:
+          type: integer
+        numberOfEpisodes:
+          type: integer
+        format:
+          type: string
+          enum: 
+              - SERIES
+              - FILM
+        averageRating:
+          type: number
+      example:
+        id: "a11"
+        title: "Gintama."
+        year: "2017"
+        seasons: 9
+        numberOfEpisodes: 120
+        format: "SERIES"
+        averageRating: 2.0
+      
+    addAnime:
+      type: object
+      properties:
+        title:
+          type: string
+        year:
+          type: string
+        seasons:
+          type: integer
+        numberOfEpisodes:
+          type: integer
+        format:
+          type: string
+          enum: 
+              - SERIES
+              - FILM
+      example:
+        title: "Gintama."
+        year: "2017"
+        seasons: 9
+        numberOfEpisodes: 120
+        format: "SERIES"
+      
+    Review:
+      type: object
+      properties:
+        id:
+          type: string
+        idAnime:
+          type: string
+        user:
+          type: string
+        comment:
+          type: string
+        rating:
+          type: integer
+        date:
+          type: object
+      example: 
+        id: "r65"
+        idAnime: "a6"
+        user: "Mellicent"
+        comment: "Aliquam quis turpis eget elit sodales scelerisque. Mauris sit amet eros. Suspendisse accumsan tortor quis turpis.;"
+        rating: 5
+        date: []
+    
+    addReview:
+      type: object
+      properties:
+        idAnime:
+          type: string
+        user:
+          type: string
+        comment:
+          type: string
+        rating:
+          type: integer
+      example: 
+        idAnime: "a6"
+        user: "Mellicent"
+        comment: "Aliquam quis turpis eget elit sodales scelerisque. Mauris sit amet eros. Suspendisse accumsan tortor quis turpis.;"
+        rating: 5
+    updateReview:
+      type: object
+      properties:
+        comment:
+          type: string
+        rating:
+          type: integer
+      example: 
+        comment: "Aliquam quis turpis eget elit sodales scelerisque. Mauris sit amet eros. Suspendisse accumsan tortor quis turpis.;"
+        rating: 5
