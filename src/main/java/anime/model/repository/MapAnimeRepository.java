@@ -18,7 +18,7 @@ import anime.model.Review;
 
 public class MapAnimeRepository implements AnimeRepository{
 	
-	Map<String, Anime> animeMap;
+	Map<Integer, Anime> animeMap;
 	Map<String, Review> reviewMap;
 	private static MapAnimeRepository instance= null;
 	private Integer index = 0;
@@ -34,19 +34,16 @@ public class MapAnimeRepository implements AnimeRepository{
 	
 	public void init() {
 		
-		animeMap = new HashMap<String, Anime>();
+		animeMap = new HashMap<Integer, Anime>();
 		reviewMap = new HashMap<String, Review>();
 		
-		List<Anime> animes = leerAnimes("CSVOFICIAL.csv", true);   //Reemplazar ruta
-		List<Review> reviews = leerReview("ReviewsOficial.csv", true);
-		
-		for(Anime a : animes) {
-			addAnime(a);
-		}
-		
-		for(Review r: reviews) {
-			addReview(r);
-		}
+//		List<Review> reviews = leerReview("ReviewsOficial.csv", true);
+//		
+//		
+//		
+//		for(Review r: reviews) {
+//			addReview(r);
+//		}
 	}
 	
 	public static List<String> leeLineas(String ruta){
@@ -60,32 +57,7 @@ public class MapAnimeRepository implements AnimeRepository{
 		
 		return result;
 	}
-	
-	public List<Anime> leerAnimes(String ruta, Boolean cabecera){
-		List<Anime> coleccionAnimes = new ArrayList<Anime>();
-		List<String> lineas = leeLineas(ruta);
-		
-		if(cabecera) {
-			lineas.remove(0);
-		}
-		
-		for(String linea: lineas) {
-			Anime nuevoAnime = parsearAnime(linea);
-			coleccionAnimes.add(nuevoAnime);
-		}
-		
-		return coleccionAnimes;		
-	}
 
-	private Anime parsearAnime(String linea) {
-		String[] splits =  linea.split(",");		
-		String title = splits[0].trim();
-		String anyo = splits[1].trim();
-		Integer temporadas = Integer.valueOf(splits[2].trim());
-		Integer n_capitulos = Integer.valueOf(splits[3].trim());
-		
-		return new Anime(title, anyo, temporadas, n_capitulos);
-	}
 	
 	public List<Review> leerReview(String ruta, Boolean cabecera){
 		List<Review> coleccionReviews = new ArrayList<Review>();
@@ -106,7 +78,7 @@ public class MapAnimeRepository implements AnimeRepository{
 	private Review parsearReview(String linea) {
 		String[] splits =  linea.split(",");		
 		
-		String idAnime = splits[0].trim();
+		Integer idAnime = Integer.valueOf(splits[0].trim());
 		String user = splits[1].trim();
 		String comment = splits[3].trim();
 		Integer rating = Integer.valueOf(splits[2].trim());
@@ -114,35 +86,11 @@ public class MapAnimeRepository implements AnimeRepository{
 		
 		return new Review(idAnime, user, comment, rating, date);
 	}
-	
 
 	
-
-	@Override
-	public void addAnime(Anime a) {
-		String id = "a" + index++;
-		a.setId(id);
-		animeMap.put(id, a);		
-	}
-
-	public Collection<Anime> getAllAnime() {
-		return animeMap.values();
-	}
-
-	public Anime getAnime(String animeId) {
-		return animeMap.get(animeId);
-	}
-
-	public void updateAnime(Anime a) {
-		animeMap.put(a.getId(), a);
-	}
-
-	public void deleteAnime(String animeId) {
-		animeMap.remove(animeId);
-	}
-
-	public Collection<Review> getAllReview(String animeId) {
-		return getAnime(animeId).reviews();
+	public Collection<Review> getAllReview(Integer animeId) {
+		return reviewMap.values().stream().filter(r -> r.getIdAnime().equals(animeId))
+				.collect(Collectors.toList());
 	}
 
 	@Override
@@ -150,8 +98,7 @@ public class MapAnimeRepository implements AnimeRepository{
 		String id = "r" + index++;
 		r.setId(id);
 		r.setDate(LocalDate.now());
-		Anime a = animeMap.get(r.getIdAnime());
-		a.addReview(r);
+		
 		reviewMap.put(id, r);
 		
 	}
@@ -172,7 +119,7 @@ public class MapAnimeRepository implements AnimeRepository{
 
 	@Override
 	public void deleteReview(Review review) {
-		animeMap.get(review.getIdAnime()).deleteReview(review);
+		
 		reviewMap.remove(review.getId());
 	}
 
@@ -180,7 +127,4 @@ public class MapAnimeRepository implements AnimeRepository{
 	public Review getReview(String reviewId) {
 		return reviewMap.get(reviewId);
 	}
-	
-	
-
 }

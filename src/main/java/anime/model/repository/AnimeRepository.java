@@ -13,16 +13,14 @@ public interface AnimeRepository {
 	public Collection<Review> getReviewsUser(String user);  //OJO
 	public void updateReview(Review review);
 	public void deleteReview(Review review);//Ojo el reviewId
-	
+	public Collection<Review> getAllReview(Integer animeId);
 	
 	
 	//Anime
-	public void addAnime(Anime a);
-	public Collection<Anime> getAllAnime();
-	public Anime getAnime(String animeId);
-	public void updateAnime(Anime a);
-	public void deleteAnime(String animeId);
-	public Collection<Review> getAllReview(String animeId);
+	
+//	public Collection<Anime> getAllAnime();
+//	public Anime getAnime(String animeId);
+	
 	
 
 }

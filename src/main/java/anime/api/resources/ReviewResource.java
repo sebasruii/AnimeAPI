@@ -51,7 +51,7 @@ public class ReviewResource {
 	@GET
 	@Produces("application/json")
 	public Collection<Review> getAll(@QueryParam("user") String user,@QueryParam("year") Integer year,
-			@QueryParam("idAnime") String idAnime,@QueryParam("order") String order){
+			@QueryParam("idAnime") Integer idAnime,@QueryParam("order") String order){
 		if(idAnime==null) {
 			throw new BadRequestException("The idAnime parameter must not be null.");
 		}
@@ -88,10 +88,10 @@ public class ReviewResource {
 		
 		if (review.getUser() == null || "".equals(review.getUser()))
 			throw new BadRequestException("The user  must not be null");
-		
-		if (review.getIdAnime()==null|| "".equals(review.getIdAnime())
-				||repository.getAnime(review.getIdAnime())==null)
-			throw new BadRequestException("The animeid must not be null.");
+//		TODO OJO
+//		if (review.getIdAnime()==null|| "".equals(review.getIdAnime())
+//				||repository.getAnime(review.getIdAnime())==null)
+//			throw new BadRequestException("The animeid must not be null.");
 		
 		if (review.getRating()==null)
 			throw new BadRequestException("The rating must not be null.");

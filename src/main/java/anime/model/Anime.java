@@ -1,148 +1,163 @@
+
 package anime.model;
 
+import java.util.HashMap;
+import java.util.Map;
+import javax.annotation.Generated;
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-import java.util.ArrayList;
-import java.util.List;
-
-
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonPropertyOrder({
+    "id",
+    "title",
+    "main_picture",
+    "start_date",
+    "end_date",
+    "media_type",
+    "status",
+    "num_episodes",
+    "start_season",
+    "broadcast"
+})
+@Generated("jsonschema2pojo")
 public class Anime {
-	
-	private String id;
-	private String title;
-	private String year;
-	private Integer seasons;
-	private Integer numberOfEpisodes;
-	private TipoFormato format;
-	private List<Review> reviews;
-	
-	public Anime() {
-		this.reviews = new ArrayList<Review>();
-	}
-	
-	public Anime(String titulo) {
-		this();
-		this.title = titulo;
-	}
-	
-	public Anime(String titulo, String anyo, Integer temporada, Integer n_capitulos) {
-		this();
-		this.title = titulo;
-		this.year = anyo;
-		this.seasons = temporada;
-		this.numberOfEpisodes = n_capitulos;
-		if(n_capitulos.equals(1)) {
-			this.format = TipoFormato.FILM;
-		} else {
-			this.format = TipoFormato.SERIES;
-		}
-	}
 
-	protected void setReviews(List<Review> r) {
-		reviews = r;
-	}
-	
-	public String getId() {
-		return id;
-	}
-	
-	public void setId(String id) {
-		this.id = id;
-	}
-	
-	public String getTitle() {
-		return title;
-	}
-	
-	public void setTitle(String titulo) {
-		this.title = titulo;
-	}
-	
-	public String getYear() {
-		return year;
-	}
-	
-	public void setYear(String anyo) {
-		this.year = anyo;
-	}
-	
-	public Integer getSeasons() {
-		return seasons;
-	}
-	
-	public void setSeasons(Integer temporada) {
-		this.seasons = temporada;
-	}
-	
-	public Integer getNumberOfEpisodes() {
-		return numberOfEpisodes;
-	}
-	
-	public void setNumberOfEpisodes(Integer n_capitulos) {
-		this.numberOfEpisodes = n_capitulos;
-	}
-	
-	public TipoFormato getFormat() {
-		return format;
-	}
-	
-	public void setFormat(TipoFormato formato) {
-		this.format = formato;
-	}
-	
-	public List<Review> reviews() {
-		return reviews;
-	}
-	
-	public Review getReview(String id) {
-		if (reviews==null || reviews.isEmpty())
-			return null;
-		
-		Review review =null;
-		for(Review r: reviews)
-			if (r.getId().equals(id))
-			{
-				review=r;
-				break;
-			}
-		
-		return review;
-	}
-	
-	public void addReview(Review r) {
-		if (reviews==null)
-			reviews = new ArrayList<Review>();
-		reviews.add(r);
-	}
-	
-	public void deleteReview(Review r) {
-		reviews.remove(r);
-	}
-	
-	public void deleteReview(String id) {
-		Review r = getReview(id);
-		if (r!=null)
-			reviews.remove(r);
-	}
-	
-	public Double getAverageRating() {
+    @JsonProperty("id")
+    private Integer id;
+    @JsonProperty("title")
+    private String title;
+    @JsonProperty("main_picture")
+    private MainPicture mainPicture;
+    @JsonProperty("start_date")
+    private String startDate;
+    @JsonProperty("end_date")
+    private String endDate;
+    @JsonProperty("media_type")
+    private String mediaType;
+    @JsonProperty("status")
+    private String status;
+    @JsonProperty("num_episodes")
+    private Integer numEpisodes;
+    @JsonProperty("start_season")
+    private StartSeason startSeason;
+    @JsonProperty("broadcast")
+    private Broadcast broadcast;
+    @JsonIgnore
+    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
-        if(this.reviews() == null || this.reviews().isEmpty()) {
-            return 0.0;
-        }
-
-        Integer count = 0;
-        Integer sum = 0;
-
-        for(Review r: reviews) {
-            sum += r.getRating();
-            count +=1;
-        }
-
-        Double promedio = (double) sum/count ;
-        Double prom = Math.round(promedio * 100) / 100d;
-
-        return prom;
+    @JsonProperty("id")
+    public Integer getId() {
+        return id;
     }
 
+    @JsonProperty("id")
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    @JsonProperty("title")
+    public String getTitle() {
+        return title;
+    }
+
+    @JsonProperty("title")
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    @JsonProperty("main_picture")
+    public MainPicture getMainPicture() {
+        return mainPicture;
+    }
+
+    @JsonProperty("main_picture")
+    public void setMainPicture(MainPicture mainPicture) {
+        this.mainPicture = mainPicture;
+    }
+
+    @JsonProperty("start_date")
+    public String getStartDate() {
+        return startDate;
+    }
+
+    @JsonProperty("start_date")
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
+    }
+
+    @JsonProperty("end_date")
+    public String getEndDate() {
+        return endDate;
+    }
+
+    @JsonProperty("end_date")
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
+    }
+
+    @JsonProperty("media_type")
+    public String getMediaType() {
+        return mediaType;
+    }
+
+    @JsonProperty("media_type")
+    public void setMediaType(String mediaType) {
+        this.mediaType = mediaType;
+    }
+
+    @JsonProperty("status")
+    public String getStatus() {
+        return status;
+    }
+
+    @JsonProperty("status")
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    @JsonProperty("num_episodes")
+    public Integer getNumEpisodes() {
+        return numEpisodes;
+    }
+
+    @JsonProperty("num_episodes")
+    public void setNumEpisodes(Integer numEpisodes) {
+        this.numEpisodes = numEpisodes;
+    }
+
+    @JsonProperty("start_season")
+    public StartSeason getStartSeason() {
+        return startSeason;
+    }
+
+    @JsonProperty("start_season")
+    public void setStartSeason(StartSeason startSeason) {
+        this.startSeason = startSeason;
+    }
+
+    @JsonProperty("broadcast")
+    public Broadcast getBroadcast() {
+        return broadcast;
+    }
+
+    @JsonProperty("broadcast")
+    public void setBroadcast(Broadcast broadcast) {
+        this.broadcast = broadcast;
+    }
+
+    @JsonAnyGetter
+    public Map<String, Object> getAdditionalProperties() {
+        return this.additionalProperties;
+    }
+
+    @JsonAnySetter
+    public void setAdditionalProperty(String name, Object value) {
+        this.additionalProperties.put(name, value);
+    }
 
 }

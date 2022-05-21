@@ -1,6 +1,8 @@
 package anime.api.resources;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -24,10 +26,13 @@ import javax.ws.rs.core.UriInfo;
 
 import org.jboss.resteasy.spi.BadRequestException;
 import org.jboss.resteasy.spi.NotFoundException;
+import org.restlet.resource.ClientResource;
 
 import anime.api.resources.comparators.ComparatorRating;
 import anime.api.resources.comparators.ComparatorRatingReversed;
 import anime.model.Anime;
+import anime.model.Anime;
+import anime.model.QueryAnimes;
 import anime.model.TipoFormato;
 import anime.model.repository.AnimeRepository;
 import anime.model.repository.MapAnimeRepository;
@@ -39,6 +44,8 @@ public class AnimeResource {
 	/*Singleton*/
 	
 	private static AnimeResource _instance;
+	private static final String MYANIMELIST_API_KEY = "30638e47e89d8af41096f3305da839c0";
+
 	AnimeRepository repository;
 	
 	private AnimeResource() {
@@ -55,31 +62,49 @@ public class AnimeResource {
 	
 	@GET
 	@Produces("application/json")
-	public Collection<Anime> getAll(@QueryParam("year") String year, @QueryParam("format") String format,
+	public Collection<Anime> getAll(@QueryParam("year") Integer year, @QueryParam("mediaType") String mediaType,
 			@QueryParam("title") String title, @QueryParam("order") String order,
-			@QueryParam("limit") Integer limit, @QueryParam("offset") Integer offset){
+			@QueryParam("limit") Integer limit, @QueryParam("offset") Integer offset) throws UnsupportedEncodingException{
 		List<Anime> result = new ArrayList<Anime>();
 		
-			
-		for(Anime a: repository.getAllAnime()) {
-			Boolean cFecha = year == null || a.getYear().equals(year);
-			Boolean cFormato = format == null || a.getFormat().equals(TipoFormato.valueOf(format));
+//		codificar la cadena
+		String encodedQuery = URLEncoder.encode(title, "UTF-8");
+//		crear la uri
+		String uri = "https://api.myanimelist.net/v2/anime?q="+ 
+						encodedQuery +
+						"&fields=id,title,start_date,end_date,media_type,status,num_episodes,start_season,broadcast";
+//		crear la llamada para acceder al servicio
+		
+		ClientResource cr = new ClientResource(uri);
+		cr.getRequest().getHeaders().add("X-MAL-CLIENT-ID", MYANIMELIST_API_KEY);
+		
+		QueryAnimes animeSearch = cr.get(QueryAnimes.class);
+		List<Anime> animes = animeSearch.getData().stream()
+				.map(d -> d.getNode())
+				.collect(Collectors.toList());
+		
+		
+		for(Anime a: animes) {
+			Boolean cFecha = year == null || a.getStartSeason().getYear().equals(year);
+			Boolean cFormato = mediaType == null || a.getMediaType().equals(mediaType);
 			Boolean cTitulo = title == null || a.getTitle().contains(title);
 			
 			if(cFecha && cFormato && cTitulo) {
 				result.add(a);
 			}
 		}
-				
-		if(order !=null) {
-			if(order.equals("rating")) {
-				Collections.sort(result, new ComparatorRatingReversed());
-			} else if(order.equals("rating-")) {
-				Collections.sort(result, new ComparatorRating());
-			} else {
-				throw new BadRequestException("the order must be 'rating' or 'rating-'");
-			}
-		}
+		
+		
+		//TODO order aun sin implementar (por ahora)
+//		if(order !=null) {
+//			if(order.equals("rating")) {
+//				Collections.sort(result, new ComparatorRatingReversed());
+//			} else if(order.equals("rating-")) {
+//				Collections.sort(result, new ComparatorRating());
+//			} else {
+//				throw new BadRequestException("the order must be 'rating' or 'rating-'");
+//			}
+//		}
 		
 		if(offset != null)
 			result = result.subList(offset + 1, result.size());
@@ -91,75 +116,22 @@ public class AnimeResource {
 		return result;
 	}
 	
-	@POST
-	@Consumes("application/json")
-	@Produces("application/json")
-	public Response addAnime(@Context UriInfo uriInfo, Anime anime) {
-		
-		if(anime.getTitle() == null || "".equals(anime.getTitle())) {
-			throw new BadRequestException("The title of the anime cannot be null");
-		}
-		
-		repository.addAnime(anime);
-		
-		
-		UriBuilder ub = uriInfo.getAbsolutePathBuilder().path(this.getClass(), "get");
-		URI uri = ub.build(anime.getId());
-		ResponseBuilder resp = Response.created(uri);
-		resp.entity(anime);
-		return resp.build();
-		
-		
-	}
-	
 	@GET
-	@Path("/{id}")
+	@Path("/{animeId}")
 	@Produces("application/json")
-	public Anime get(@PathParam("id") String id) {
-		Anime anime = repository.getAnime(id);
-		
-		if(anime==null) {
-			throw new NotFoundException("The anime with id "+id+" was not found.");
-		}
+	public Anime get(@PathParam("animeId") Integer animeId) {
+//		crear la uri
+		String uri = "https://api.myanimelist.net/v2/anime/" + 
+					animeId + 
+					"?fields=id,title,start_date,end_date,media_type,status,num_episodes,start_season,broadcast";
+;
+//		crear la llamada para acceder al servicio
+		ClientResource cr = new ClientResource(uri);
+		cr.getRequest().getHeaders().add("X-MAL-CLIENT-ID", "30638e47e89d8af41096f3305da839c0");
+		Anime anime = cr.get(Anime.class);
 		
 		return anime;
 	}
 	
-	@PUT
-	@Path("/{id}")
-	@Consumes("application/json")
-	public Response updateAnime(@PathParam("id") String id, Anime anime) {
-		Anime oldAnime = repository.getAnime(id);
-		if(oldAnime == null) {
-			throw new NotFoundException("The anime with id=" + id + " was not found.");
-		}
-		
-		if(anime.getTitle()!=null) 
-			oldAnime.setTitle(anime.getTitle());
-		if(anime.getYear()!=null) 
-			oldAnime.setYear(anime.getYear());
-		if(anime.getNumberOfEpisodes()!=null) 
-			oldAnime.setNumberOfEpisodes(anime.getNumberOfEpisodes());
-		if(anime.getSeasons()!=null) 
-			oldAnime.setSeasons(anime.getSeasons());
-		if(anime.getFormat()!=null) 
-			oldAnime.setFormat(anime.getFormat());
-		if(anime.getSeasons()!=null) 
-			oldAnime.setSeasons(anime.getSeasons());
-		
-		return Response.noContent().build();
-
-	}
 	
-	@DELETE
-	@Path("/{id}")
-	public Response removeAnime(@PathParam("id") String id) {
-		Anime toBeRemoved = repository.getAnime(id);
-		if(toBeRemoved == null)
-			throw new NotFoundException("The anime with id=" + id + " was not found.");
-		else
-			repository.deleteAnime(id);
-		
-		return Response.noContent().build();
-	}
 }
