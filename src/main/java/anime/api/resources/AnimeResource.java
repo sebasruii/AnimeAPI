@@ -1,39 +1,22 @@
 package anime.api.resources;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URI;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
-import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.core.UriInfo;
 
-import org.jboss.resteasy.spi.BadRequestException;
-import org.jboss.resteasy.spi.NotFoundException;
 import org.restlet.resource.ClientResource;
 
-import anime.api.resources.comparators.ComparatorRating;
-import anime.api.resources.comparators.ComparatorRatingReversed;
-import anime.model.Anime;
 import anime.model.Anime;
 import anime.model.QueryAnimes;
-import anime.model.TipoFormato;
 import anime.model.repository.AnimeRepository;
 import anime.model.repository.MapAnimeRepository;
 
