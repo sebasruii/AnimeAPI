@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import anime.model.Anime;
 import anime.model.Review;
+import anime.model.User;
 
 public interface AnimeRepository {
 	
@@ -14,6 +15,12 @@ public interface AnimeRepository {
 	public void updateReview(Review review);
 	public void deleteReview(Review review);//Ojo el reviewId
 	public Collection<Review> getAllReview(Integer animeId);
+	
+	//User
+	public void addUser(User u);
+	public void updateUser(User user);
+	public User getUser(String userName);
+	public User getUserByToken(String token);
 	
 	
 	//Anime
