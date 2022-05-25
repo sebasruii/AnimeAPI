@@ -7,6 +7,7 @@ import javax.ws.rs.core.Application;
 
 import anime.api.resources.AnimeResource;
 import anime.api.resources.ReviewResource;
+import anime.api.resources.UserResource;
 
 
 
@@ -21,6 +22,7 @@ public class AnimeApplication extends Application {
 
 		singletons.add(AnimeResource.getInstance());
 		singletons.add(ReviewResource.getInstance());
+		singletons.add(UserResource.getInstance());
 	}
 
 	@Override

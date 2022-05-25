@@ -136,7 +136,7 @@ public class MapAnimeRepository implements AnimeRepository{
 	@Override
 	public void addUser(User u) {
 		//UUID es un identificador unico para producir el token del usuario
-		u.setToken(UUID.randomUUID().toString());
+		u.setToken(UUID.randomUUID().toString().replaceAll(" ",""));
 		userMapToken.put(u.getToken(), u);
 		userMapUsername.put(u.getUserName(), u);
 	}

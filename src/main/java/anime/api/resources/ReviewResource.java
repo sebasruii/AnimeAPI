@@ -84,7 +84,7 @@ public class ReviewResource {
 	@POST
 	@Consumes("application/json")
 	@Produces("application/json")
-	public Response addReview(@Context UriInfo uriInfo, Review review) {
+	public Response addReview(@Context UriInfo uriInfo, Review review) { //A través de un token obtendremos el nombre de usuario
 		
 		if (review.getUser() == null || "".equals(review.getUser()))
 			throw new BadRequestException("The user  must not be null");
@@ -111,7 +111,7 @@ public class ReviewResource {
 	@PUT
 	@Path("/{reviewId}")
 	@Consumes("application/json")
-	public Response updateReview(@PathParam("reviewId") String reviewId,Review review) {
+	public Response updateReview(@PathParam("reviewId") String reviewId,Review review) { //necesario el token de usuario
 		
 		Review oldReview= repository.getReview(reviewId);
 		
@@ -135,7 +135,7 @@ public class ReviewResource {
 	///OJO
 	@DELETE
 	@Path("/{reviewId}")
-	public Response removeReview(@PathParam("reviewId") String reviewId) {
+	public Response removeReview(@PathParam("reviewId") String reviewId) { //necesario el token de usuario
 		Review toberemoved= repository.getReview(reviewId);
 		if (toberemoved == null)
 			throw new NotFoundException("The review with id="+ reviewId +" was not found");

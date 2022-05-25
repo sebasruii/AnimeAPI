@@ -51,6 +51,18 @@ public class UserResource {
 		
 	}
 	
+	@Path("/{token}")
+	@GET
+	@Produces("application/json")
+	public String get(@PathParam("token") String token) {
+		
+		User user = repository.getUserByToken(token);
+		if(user==null)
+			throw new NotFoundException("Incorrect token");
+		return user.getToken();
+		
+	}
+	
 	@POST
 	@Consumes("application/json")
 	@Produces("application/json")
@@ -69,7 +81,7 @@ public class UserResource {
 		UriBuilder ub = uriInfo.getAbsolutePathBuilder().path(this.getClass(), "get");
 		URI uri = ub.build(user.getToken());
 		ResponseBuilder resp = Response.created(uri);
-		resp.entity(user);			
+		resp.entity(user.getToken());			
 		return resp.build();
 	}
 	
@@ -84,14 +96,9 @@ public class UserResource {
 			throw new NotFoundException("The user from "+ token+" were not found");
 		}
 		
-		//Update UserName
-		
-		if(user.getUserName()!=null)
-			oldUser.setUserName(user.getUserName());
-		
 		// Update password
 		if(user.getPassword()!=null)
-			oldUser.setPassword(user.getPassword());
+			oldUser.setPassword(PasswordUtils.generateSecurePassword(user.getPassword()));
 		
 		return Response.noContent().build();
 	}
