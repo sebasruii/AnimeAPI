@@ -21,6 +21,8 @@ public interface AnimeRepository {
 	public void updateUser(User user);
 	public User getUser(String userName);
 	public User getUserByToken(String token);
+	public void deleteUser(User u);
+	public Boolean userExist(User u);
 	
 	
 	//Anime

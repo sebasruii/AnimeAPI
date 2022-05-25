@@ -140,6 +140,15 @@ public class MapAnimeRepository implements AnimeRepository{
 		userMapToken.put(u.getToken(), u);
 		userMapUsername.put(u.getUserName(), u);
 	}
+	
+	public void deleteUser(User u) {
+		userMapUsername.remove(u.getUserName());
+		userMapToken.remove(u.getToken());
+	}
+	
+	public Boolean userExist(User u) {
+		return userMapUsername.containsKey(u.getUserName());
+	}
 
 
 	@Override

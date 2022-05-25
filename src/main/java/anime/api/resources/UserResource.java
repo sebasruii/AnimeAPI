@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.UUID;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -21,6 +22,7 @@ import org.jboss.resteasy.spi.BadRequestException;
 import org.jboss.resteasy.spi.NotFoundException;
 
 import anime.api.utils.PasswordUtils;
+import anime.model.Review;
 import anime.model.User;
 import anime.model.repository.AnimeRepository;
 import anime.model.repository.MapAnimeRepository;
@@ -73,6 +75,9 @@ public class UserResource {
 		
 		if (user.getPassword()==null)
 			throw new BadRequestException("The password must not be null.");
+		//Comprueba que no exista ya ningun usuario con ese nombre
+		if(repository.userExist(user))
+			throw new BadRequestException("The user already exist");
 		//la clase PasswordUtils sirve para encriptar la contraseña
 		user.setPassword(PasswordUtils.generateSecurePassword(user.getPassword()));
 		repository.addUser(user);
@@ -99,6 +104,19 @@ public class UserResource {
 		// Update password
 		if(user.getPassword()!=null)
 			oldUser.setPassword(PasswordUtils.generateSecurePassword(user.getPassword()));
+		
+		return Response.noContent().build();
+	}
+	
+	@DELETE
+	@Path("/{token}")
+	@Produces("application/json")
+	public Response removeUser(@PathParam("token") String token) {
+		User toberemoved= repository.getUserByToken(token);
+		if (toberemoved == null)
+			throw new NotFoundException("The user with token="+ token +" was not found");
+		else
+			repository.deleteUser(toberemoved);
 		
 		return Response.noContent().build();
 	}
