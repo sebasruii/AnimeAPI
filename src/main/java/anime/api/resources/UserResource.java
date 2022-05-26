@@ -6,6 +6,7 @@ import java.util.UUID;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -91,9 +92,8 @@ public class UserResource {
 	}
 	
 	@PUT
-	@Path("/{token}")
 	@Consumes("application/json")
-	public Response updateUser(@PathParam("token") String token, User user) {
+	public Response updateUser(@HeaderParam("token") String token, User user) {
 		
 		User oldUser= repository.getUserByToken(token);
 		
@@ -109,9 +109,8 @@ public class UserResource {
 	}
 	
 	@DELETE
-	@Path("/{token}")
 	@Produces("application/json")
-	public Response removeUser(@PathParam("token") String token) {
+	public Response removeUser(@HeaderParam("token") String token) {
 		User toberemoved= repository.getUserByToken(token);
 		if (toberemoved == null)
 			throw new NotFoundException("The user with token="+ token +" was not found");

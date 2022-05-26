@@ -112,7 +112,7 @@ public class MapAnimeRepository implements AnimeRepository{
 	public Collection<Review> getReviewsUser(String user) {
 		
 		return reviewMap.values().stream()
-				.filter(r -> r.getUser().equals(user))
+				.filter(r -> r.getUserName().equals(user))
 				.collect(Collectors.toList());
 	}
 

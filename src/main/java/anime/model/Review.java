@@ -5,7 +5,7 @@ import java.time.LocalDate;
 public class Review {
 	private String id;
     private Integer idAnime;
-    private String user;
+    private String userName;
     private String comment;
     private Integer rating;
     private LocalDate date;
@@ -14,7 +14,7 @@ public class Review {
 
     public Review(Integer idAnime, String user, String comment, Integer rating, LocalDate date) {
 		this.idAnime = idAnime;
-		this.user = user;
+		this.userName = user;
 		this.comment = comment;
 		this.rating = rating;
 		this.date = date;
@@ -81,12 +81,12 @@ public class Review {
 		this.idAnime = idAnime;
 	}
 
-	public String getUser() {
-		return user;
+	public String getUserName() {
+		return userName;
 	}
 
-	public void setUser(String user) {
-		this.user = user;
+	public void setUserName(String user) {
+		this.userName = user;
 	}
 	
 	
