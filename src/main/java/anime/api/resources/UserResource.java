@@ -1,8 +1,6 @@
 package anime.api.resources;
 
 import java.net.URI;
-import java.util.UUID;
-
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -23,7 +21,6 @@ import org.jboss.resteasy.spi.BadRequestException;
 import org.jboss.resteasy.spi.NotFoundException;
 
 import anime.api.utils.PasswordUtils;
-import anime.model.Review;
 import anime.model.User;
 import anime.model.repository.AnimeRepository;
 import anime.model.repository.MapAnimeRepository;

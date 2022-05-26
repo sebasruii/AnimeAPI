@@ -10,7 +10,7 @@ public class ComparatorRating implements Comparator<Anime>{
 	@Override
 	public int compare(Anime o1, Anime o2) {
 		
-		return 0;
+		return o1.getAverageRating().compareTo(o2.getAverageRating());
 	}
 
 	

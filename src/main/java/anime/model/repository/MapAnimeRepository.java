@@ -20,7 +20,7 @@ import anime.model.User;
 
 public class MapAnimeRepository implements AnimeRepository{
 	
-	Map<Integer, Anime> animeMap;
+
 	Map<String, Review> reviewMap;
 	Map<String, User> userMapToken;
 	Map<String, User> userMapUsername;
@@ -38,7 +38,7 @@ public class MapAnimeRepository implements AnimeRepository{
 	
 	public void init() {
 		
-		animeMap = new HashMap<Integer, Anime>();
+
 		reviewMap = new HashMap<String, Review>();
 		userMapToken = new HashMap<String, User>();
 		userMapUsername = new HashMap<String, User>();
@@ -165,5 +165,14 @@ public class MapAnimeRepository implements AnimeRepository{
 	@Override
 	public User getUserByToken(String token) {
 		return userMapToken.get(token);
+	}
+	
+	public Double getAverageRating(Integer animeId) {
+		Double averageRating = reviewMap.values().stream()
+				.filter(r -> r.getIdAnime().equals(animeId))
+				.mapToInt(x ->x.getRating())
+				.average().orElse(0);
+		
+		return averageRating;
 	}
 }

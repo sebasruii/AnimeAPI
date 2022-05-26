@@ -2,7 +2,6 @@ package anime.model.repository;
 
 import java.util.Collection;
 
-import anime.model.Anime;
 import anime.model.Review;
 import anime.model.User;
 
@@ -23,13 +22,6 @@ public interface AnimeRepository {
 	public User getUserByToken(String token);
 	public void deleteUser(User u);
 	public Boolean userExist(User u);
-	
-	
-	//Anime
-	
-//	public Collection<Anime> getAllAnime();
-//	public Anime getAnime(String animeId);
-	
 	
 
 }

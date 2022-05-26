@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,6 +18,8 @@ import org.jboss.resteasy.spi.BadRequestException;
 import org.jboss.resteasy.spi.NotFoundException;
 import org.restlet.resource.ClientResource;
 
+import anime.api.resources.comparators.ComparatorRating;
+import anime.api.resources.comparators.ComparatorRatingReversed;
 import anime.model.Anime;
 import anime.model.QueryAnimes;
 import anime.model.repository.AnimeRepository;
@@ -105,16 +108,15 @@ public class AnimeResource {
 		}		
 		
 		
-		//TODO order aun sin implementar (por ahora)
-//		if(order !=null) {
-//			if(order.equals("rating")) {
-//				Collections.sort(result, new ComparatorRatingReversed());
-//			} else if(order.equals("rating-")) {
-//				Collections.sort(result, new ComparatorRating());
-//			} else {
-//				throw new BadRequestException("the order must be 'rating' or 'rating-'");
-//			}
-//		}
+		if(order !=null) {
+			if(order.equals("rating")) {
+				Collections.sort(result, new ComparatorRatingReversed());
+			} else if(order.equals("rating-")) {
+				Collections.sort(result, new ComparatorRating());
+			} else {
+				throw new BadRequestException("the order must be 'rating' or 'rating-'");
+			}
+		}
 		
 		if(offset != null)
 			result = result.subList(offset + 1, result.size());

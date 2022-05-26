@@ -11,6 +11,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+import anime.model.repository.MapAnimeRepository;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
     "id",
@@ -150,6 +152,12 @@ public class Anime {
         this.broadcast = broadcast;
     }
 
+    public Double getAverageRating() {
+		Double r =null;
+		if(MapAnimeRepository.getInstance().getAverageRating(getId()) != 0)
+			r = MapAnimeRepository.getInstance().getAverageRating(getId());
+		return r;
+	}
     
 
     @JsonAnySetter
