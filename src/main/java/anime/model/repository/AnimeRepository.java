@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import anime.model.Review;
 import anime.model.User;
+import anime.model.events.Token;
 
 public interface AnimeRepository {
 	
@@ -23,5 +24,8 @@ public interface AnimeRepository {
 	public void deleteUser(User u);
 	public Boolean userExist(User u);
 	
+	
+	//Events
+	public Token getToken();
 
 }

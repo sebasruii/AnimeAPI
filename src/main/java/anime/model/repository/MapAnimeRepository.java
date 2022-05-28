@@ -1,6 +1,7 @@
 package anime.model.repository;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -13,10 +14,15 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.jboss.resteasy.spi.InternalServerErrorException;
+import org.restlet.resource.ClientResource;
 
 import anime.model.Anime;
 import anime.model.Review;
 import anime.model.User;
+import anime.model.events.Token;
+import anime.model.events.UserCalendar;
+
 
 public class MapAnimeRepository implements AnimeRepository{
 	
@@ -24,6 +30,7 @@ public class MapAnimeRepository implements AnimeRepository{
 	Map<String, Review> reviewMap;
 	Map<String, User> userMapToken;
 	Map<String, User> userMapUsername;
+	UserCalendar userCal;
 	private static MapAnimeRepository instance= null;
 	private Integer index = 0;
 	
@@ -42,6 +49,11 @@ public class MapAnimeRepository implements AnimeRepository{
 		reviewMap = new HashMap<String, Review>();
 		userMapToken = new HashMap<String, User>();
 		userMapUsername = new HashMap<String, User>();
+		
+		userCal = new UserCalendar();
+		userCal.setUsername("AnimeAPI");
+		userCal.setPassword("AnimeAPI123");
+		
 //		List<Review> reviews = leerReview("ReviewsOficial.csv", true);
 //		
 //		
@@ -61,6 +73,26 @@ public class MapAnimeRepository implements AnimeRepository{
 		}
 		
 		return result;
+	}
+	
+	public UserCalendar getUserCalendar() {
+		return userCal;
+	}
+	
+	public Token getToken() {
+//		crear la uri
+		String uri = "https://eventsapi-v1.herokuapp.com/api/auth/token/";
+//		crear la llamada para acceder al servicio
+		try {
+			ClientResource cr = new ClientResource(uri);
+			cr.setEntityBuffering(true);
+			Token token = cr.post(userCal,Token.class);
+
+		    return token;
+		} catch (Exception e) {
+			throw new InternalServerErrorException("An error occurred when trying to use EventsAPI");
+		}
+		
 	}
 
 	

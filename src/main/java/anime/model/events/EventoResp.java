@@ -1,5 +1,5 @@
 
-package anime.model;
+package anime.model.events;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,37 +13,37 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "refresh",
-    "access"
+    "message",
+    "event"
 })
 @Generated("jsonschema2pojo")
-public class Token {
+public class EventoResp {
 
-    @JsonProperty("refresh")
-    private String refresh;
-    @JsonProperty("access")
-    private String access;
+    @JsonProperty("message")
+    private String message;
+    @JsonProperty("event")
+    private Event event;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
-    @JsonProperty("refresh")
-    public String getRefresh() {
-        return refresh;
+    @JsonProperty("message")
+    public String getMessage() {
+        return message;
     }
 
-    @JsonProperty("refresh")
-    public void setRefresh(String refresh) {
-        this.refresh = refresh;
+    @JsonProperty("message")
+    public void setMessage(String message) {
+        this.message = message;
     }
 
-    @JsonProperty("access")
-    public String getAccess() {
-        return access;
+    @JsonProperty("event")
+    public Event getEvent() {
+        return event;
     }
 
-    @JsonProperty("access")
-    public void setAccess(String access) {
-        this.access = access;
+    @JsonProperty("event")
+    public void setEvent(Event event) {
+        this.event = event;
     }
 
     @JsonAnyGetter

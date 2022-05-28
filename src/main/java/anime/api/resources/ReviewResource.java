@@ -86,7 +86,7 @@ public class ReviewResource {
 	@POST
 	@Consumes("application/json")
 	@Produces("application/json")
-	public Response addReview(@Context UriInfo uriInfo, @HeaderParam("token") String token, Review review) { //A través de un token obtendremos el nombre de usuario
+	public Response addReview(@Context UriInfo uriInfo, @HeaderParam("token") String token, Review review) { //A traves de un token obtendremos el nombre de usuario
 		
 		User user = repository.getUserByToken(token);
 		

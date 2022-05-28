@@ -76,7 +76,7 @@ public class UserResource {
 		//Comprueba que no exista ya ningun usuario con ese nombre
 		if(repository.userExist(user))
 			throw new BadRequestException("The user already exist");
-		//la clase PasswordUtils sirve para encriptar la contraseña
+		//la clase PasswordUtils sirve para encriptar la contrasenya
 		user.setPassword(PasswordUtils.generateSecurePassword(user.getPassword()));
 		repository.addUser(user);
 

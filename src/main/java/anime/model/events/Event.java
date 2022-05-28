@@ -1,5 +1,5 @@
 
-package anime.model;
+package anime.model.events;
 
 import java.util.HashMap;
 import java.util.Map;
