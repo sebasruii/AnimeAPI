@@ -47,7 +47,6 @@ public class EventResource {
 	}
 	
 	@POST
-	@Consumes("application/json")
 	@Produces("application/json")
 	public Event addEvent(@HeaderParam("token") String token,@QueryParam("animeId") Integer animeId) { //A traves de un token obtendremos el nombre de usuario
 		
@@ -73,11 +72,10 @@ public class EventResource {
 		
 		cr.setChallengeResponse(authHeader);
 		
-		System.out.println(t.getAccess() +  cr.toString());
-		
 		
 		Event event = new Event();
 		event.setEventName(user.getUserName());
+		
 		LocalDate date = calcNext(anime.getBroadcast().getDayOfTheWeek());
 		
 		event.setDate(date.format(DateTimeFormatter.ISO_DATE));
