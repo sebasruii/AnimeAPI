@@ -95,7 +95,7 @@ public class EventResource {
 			EventoResp response = cr.post(event, EventoResp.class);
 			return response.getEvent();
 		}catch (ResourceException re) {
-			throw new InternalServerErrorException("Error when creating the Event: " + cr.getResponse().getStatus() + cr.getAttribute("Authorization"));
+			throw new InternalServerErrorException("Error when creating the Event: " + cr.getResponse().getStatus());
 		}			
 	}
 	
@@ -125,19 +125,26 @@ public class EventResource {
             ChallengeResponse authHeader = new ChallengeResponse(new ChallengeScheme("JWT", "JWT"));
             authHeader.setRawValue(t.getAccess());
             cr.setChallengeResponse(authHeader);
-
-            events = cr.get(Event[].class);
+            
+            try {
+            	events = cr.get(Event[].class);
+			} catch (Exception e) {
+				events = null;
+			}
+            
+            
+            if(events == null) {
+                throw new NotFoundException("No events found for the user: " + nameUser);
+            }
             for(Event e : events) {
                 eventsUser.add(e);
             }
 
         } catch (ResourceException re) {
-            throw new InternalServerErrorException("There was and error retrieving the events from EventsAPI");
+            throw new InternalServerErrorException("There was and error retrieving the events from EventsAPI " + re.getResponse());
         }
 
-        if(eventsUser.isEmpty()) {
-            throw new NotFoundException("No events found for the user: " + nameUser);
-        }
+        
 
         return eventsUser;
 
@@ -163,6 +170,7 @@ public class EventResource {
 		
 		
         try {
+        	cr.setEntityBuffering(true);
             cr.delete();
 
         } catch (ResourceException re) {
