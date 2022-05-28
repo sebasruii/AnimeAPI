@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
@@ -167,8 +166,7 @@ public class EventResource {
             cr.delete();
 
         } catch (ResourceException re) {
-            System.err.println("Error when deleting the event: " + cr.getResponse().getStatus());
-            throw re;
+            throw new NotFoundException("The event with eventId=" + eventId + " was not found.");
         }
 
         return Response.noContent().build();

@@ -41,7 +41,7 @@ public class UserResource {
 	}
 	
 	@GET
-	@Produces("application/json")
+	@Produces("text/plain")
 	public String getToken(@QueryParam("userName") String userName, @QueryParam("password") String password) {
 		
 		User user = repository.getUser(userName);
@@ -53,7 +53,7 @@ public class UserResource {
 	
 	@Path("/{token}")
 	@GET
-	@Produces("application/json")
+	@Produces("text/plain")
 	public String get(@PathParam("token") String token) {
 		
 		User user = repository.getUserByToken(token);
@@ -65,7 +65,7 @@ public class UserResource {
 	
 	@POST
 	@Consumes("application/json")
-	@Produces("application/json")
+	@Produces("text/plain")
 	public Response addUser(@Context UriInfo uriInfo, User user) {
 		
 		if (user.getUserName() == null || "".equals(user.getUserName()))

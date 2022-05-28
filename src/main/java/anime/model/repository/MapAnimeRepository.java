@@ -1,9 +1,7 @@
 package anime.model.repository;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -17,7 +15,6 @@ import java.util.stream.Collectors;
 import org.jboss.resteasy.spi.InternalServerErrorException;
 import org.restlet.resource.ClientResource;
 
-import anime.model.Anime;
 import anime.model.Review;
 import anime.model.User;
 import anime.model.events.Token;

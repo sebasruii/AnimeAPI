@@ -67,25 +67,19 @@ public class AnimeResource {
 		try {
 			QueryAnimes animeSearch;
 			
-			if(title==null || "".equals(title)) {
-				ClientResource cr = new ClientResource(BASE_URI);
-				cr.getRequest().getHeaders().add("X-MAL-CLIENT-ID", MYANIMELIST_API_KEY);
-				
-				animeSearch = cr.get(QueryAnimes.class);
-			} else {
-				String encodedQuery = URLEncoder.encode(title, "UTF-8");
+	
+			String encodedQuery = URLEncoder.encode(title, "UTF-8");
 //				crear la uri
-				String uri = BASE_URI + "?q="+ 
-								encodedQuery + "&"+
-								ANIME_FIELDS;
+			String uri = BASE_URI + "?q="+ 
+							encodedQuery + "&"+
+							ANIME_FIELDS;
 //				crear la llamada para acceder al servicio
+			
+			ClientResource cr = new ClientResource(uri);
+			cr.getRequest().getHeaders().add("X-MAL-CLIENT-ID", MYANIMELIST_API_KEY);
+			
+			animeSearch = cr.get(QueryAnimes.class);
 				
-				ClientResource cr = new ClientResource(uri);
-				cr.getRequest().getHeaders().add("X-MAL-CLIENT-ID", MYANIMELIST_API_KEY);
-				
-				animeSearch = cr.get(QueryAnimes.class);
-				
-			}
 			
 			List<Anime> animes = animeSearch.getData().stream()
 					.map(d -> d.getNode())

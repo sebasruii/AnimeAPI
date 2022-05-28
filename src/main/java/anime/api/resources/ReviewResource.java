@@ -121,8 +121,7 @@ public class ReviewResource {
 		return resp.build();
 	}
 	
-	
-	//El put hay que mirarlo
+
 	@PUT
 	@Path("/{reviewId}")
 	@Consumes("application/json")
@@ -152,7 +151,6 @@ public class ReviewResource {
 	}
 	
 	
-	///OJO
 	@DELETE
 	@Path("/{reviewId}")
 	public Response removeReview(@PathParam("reviewId") String reviewId, @HeaderParam("token") String token) { //necesario el token de usuario
