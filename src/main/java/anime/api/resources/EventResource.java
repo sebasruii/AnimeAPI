@@ -151,6 +151,7 @@ public class EventResource {
     }
 
 	@DELETE
+	@Produces("application/json")
 	@Path("/{eventId}")
     public Response removeEvent(@HeaderParam("token") String token,@PathParam("eventId") String eventId ){
 
@@ -171,13 +172,16 @@ public class EventResource {
 		
         try {
         	cr.setEntityBuffering(true);
+        	cr.setRetryAttempts(0);
             cr.delete();
+            
+            return Response.noContent().build();
 
-        } catch (ResourceException re) {
+        } catch (Exception e) {
             throw new NotFoundException("The event with eventId=" + eventId + " was not found.");
         }
 
-        return Response.noContent().build();
+        
 
     }
 }
