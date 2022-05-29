@@ -51,13 +51,13 @@ public class MapAnimeRepository implements AnimeRepository{
 		userCal.setUsername("AnimeAPI");
 		userCal.setPassword("AnimeAPI123");
 		
-//		List<Review> reviews = leerReview("ReviewsOficial.csv", true);
-//		
-//		
-//		
-//		for(Review r: reviews) {
-//			addReview(r);
-//		}
+		List<Review> reviews = leerReview("ReviewsOficial.csv", true);
+	
+		
+		
+		for(Review r: reviews) {
+			addReview(r);
+		}
 	}
 	
 	public static List<String> leeLineas(String ruta){
@@ -102,15 +102,15 @@ public class MapAnimeRepository implements AnimeRepository{
 		}
 		
 		for(String linea: lineas) {
-			Review nuevoAnime = parsearReview(linea);
-			coleccionReviews.add(nuevoAnime);
+			Review nuevaReview = parsearReview(linea);
+			coleccionReviews.add(nuevaReview);
 		}
 		
 		return coleccionReviews;		
 	}
 	
 	private Review parsearReview(String linea) {
-		String[] splits =  linea.split(",");		
+		String[] splits =  linea.split(";");		
 		
 		Integer idAnime = Integer.valueOf(splits[0].trim());
 		String user = splits[1].trim();

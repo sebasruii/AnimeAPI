@@ -153,7 +153,7 @@ public class Anime {
     }
 
     public Double getAverageRating() {
-		Double r =null;
+		Double r =0.;
 		if(MapAnimeRepository.getInstance().getAverageRating(getId()) != 0)
 			r = MapAnimeRepository.getInstance().getAverageRating(getId());
 		return r;

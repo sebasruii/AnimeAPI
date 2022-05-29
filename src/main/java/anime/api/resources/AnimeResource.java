@@ -111,8 +111,8 @@ public class AnimeResource {
 			}
 		}
 		
-		if(offset != null)
-			result = result.subList(offset + 1, result.size());
+		if(offset != null && offset< result.size())
+			result = result.subList(offset, result.size());
 		
 		if(limit != null)
 			result = result.stream().limit(limit).collect(Collectors.toList());
