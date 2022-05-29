@@ -2,8 +2,9 @@ package anime.model.repository;
 
 import java.util.Collection;
 
-import anime.model.Anime;
 import anime.model.Review;
+import anime.model.User;
+import anime.model.events.Token;
 
 public interface AnimeRepository {
 	
@@ -13,16 +14,18 @@ public interface AnimeRepository {
 	public Collection<Review> getReviewsUser(String user);  //OJO
 	public void updateReview(Review review);
 	public void deleteReview(Review review);//Ojo el reviewId
+	public Collection<Review> getAllReview(Integer animeId);
+	
+	//User
+	public void addUser(User u);
+	public void updateUser(User user);
+	public User getUser(String userName);
+	public User getUserByToken(String token);
+	public void deleteUser(User u);
+	public Boolean userExist(User u);
 	
 	
-	
-	//Anime
-	public void addAnime(Anime a);
-	public Collection<Anime> getAllAnime();
-	public Anime getAnime(String animeId);
-	public void updateAnime(Anime a);
-	public void deleteAnime(String animeId);
-	public Collection<Review> getAllReview(String animeId);
-	
+	//Events
+	public Token getToken();
 
 }

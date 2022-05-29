@@ -2,6 +2,7 @@ package anime.api.resources;
 
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -27,6 +28,7 @@ import org.jboss.resteasy.spi.NotFoundException;
 import anime.api.resources.comparators.ComparatorRatingReview;
 import anime.api.resources.comparators.ComparatorRatingReviewReversed;
 import anime.model.Review;
+import anime.model.User;
 import anime.model.repository.AnimeRepository;
 import anime.model.repository.MapAnimeRepository;
 
@@ -51,7 +53,7 @@ public class ReviewResource {
 	@GET
 	@Produces("application/json")
 	public Collection<Review> getAll(@QueryParam("user") String user,@QueryParam("year") Integer year,
-			@QueryParam("idAnime") String idAnime,@QueryParam("order") String order){
+			@QueryParam("idAnime") Integer idAnime,@QueryParam("order") String order){
 		if(idAnime==null) {
 			throw new BadRequestException("The idAnime parameter must not be null.");
 		}
@@ -65,7 +67,7 @@ public class ReviewResource {
 			reviews=reviews.stream().filter(r->r.getDate().getYear()==year).collect(Collectors.toList());
 		}
 		if(user!=null) {
-			reviews=reviews.stream().filter(r->r.getUser().equals(user)).collect(Collectors.toList());
+			reviews=reviews.stream().filter(r->r.getUserName().equals(user)).collect(Collectors.toList());
 		}
 		
 		if(order != null) {
@@ -84,18 +86,31 @@ public class ReviewResource {
 	@POST
 	@Consumes("application/json")
 	@Produces("application/json")
-	public Response addReview(@Context UriInfo uriInfo, Review review) {
+	public Response addReview(@Context UriInfo uriInfo, @HeaderParam("token") String token, Review review) { //A traves de un token obtendremos el nombre de usuario
 		
-		if (review.getUser() == null || "".equals(review.getUser()))
-			throw new BadRequestException("The user  must not be null");
+		User user = repository.getUserByToken(token);
 		
-		if (review.getIdAnime()==null|| "".equals(review.getIdAnime())
-				||repository.getAnime(review.getIdAnime())==null)
+		if (user == null)
+			throw new BadRequestException("Incorrect token");
+		
+		if (review.getIdAnime()==null)
 			throw new BadRequestException("The animeid must not be null.");
+		
+		try {
+//			Comprueba que existe un anime con esa Id
+			AnimeResource.getInstance().get(review.getIdAnime());
+		} catch (NotFoundException e) {
+			throw e;
+		}
+		
 		
 		if (review.getRating()==null)
 			throw new BadRequestException("The rating must not be null.");
+		
+		if (review.getRating() < 1 || review.getRating() > 5)
+			throw new BadRequestException("The rating must be an integer between 1 and 5 (inclusive)");
 
+		review.setUserName(user.getUserName());
 		repository.addReview(review);
 
 		
@@ -106,17 +121,21 @@ public class ReviewResource {
 		return resp.build();
 	}
 	
-	
-	//El put hay que mirarlo
+
 	@PUT
 	@Path("/{reviewId}")
 	@Consumes("application/json")
-	public Response updateReview(@PathParam("reviewId") String reviewId,Review review) {
+	public Response updateReview(@PathParam("reviewId") String reviewId, @HeaderParam("token") String token, Review review) { //necesario el token de usuario
+		
+		User user = repository.getUserByToken(token);
+		
+		if (user == null)
+			throw new BadRequestException("Incorrect token");
 		
 		Review oldReview= repository.getReview(reviewId);
 		
 		if(oldReview==null) {
-			throw new NotFoundException("The reviews from "+ reviewId+" were not found");
+			throw new NotFoundException("The review with Id="+ reviewId+" was not found.");
 		}
 		//Update Rating
 		if(review.getRating()!=null)
@@ -132,13 +151,17 @@ public class ReviewResource {
 	}
 	
 	
-	///OJO
 	@DELETE
 	@Path("/{reviewId}")
-	public Response removeReview(@PathParam("reviewId") String reviewId) {
+	public Response removeReview(@PathParam("reviewId") String reviewId, @HeaderParam("token") String token) { //necesario el token de usuario
+		User user = repository.getUserByToken(token);
+		
+		if (user == null)
+			throw new BadRequestException("Incorrect token");
+		
 		Review toberemoved= repository.getReview(reviewId);
 		if (toberemoved == null)
-			throw new NotFoundException("The review with id="+ reviewId +" was not found");
+			throw new NotFoundException("The review with id="+ reviewId +" was not found.");
 		else
 			repository.deleteReview(toberemoved);
 		

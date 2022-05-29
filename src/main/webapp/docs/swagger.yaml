@@ -1,0 +1,606 @@
+openapi: 3.0.0
+servers:
+  - url: https://anime-api7.appspot.com/v1
+  - url: http://localhost:8089/v1
+    description: servidor ejecutado en local
+info:
+  description: AnimeAPI es una API que permite consultar información de animes gracias a la integración con la API de MyAnimeList, una página web que cuenta con un directorio de animes bastante completo.
+  
+    AnimeAPI además permite la creación de cuentas de usuario, mediante las cuales se pueden añadir reseñas y comentarios sobre los animes disponibles.
+    
+    Además, se permite al usuario generar eventos a modo de recordatorio sobre fecha del próximo episodio del anime que prefieran. De esta manera, el usuario puede comprobar la fecha de estreno del próximo episodio de aquellos animes que decida añadir a su calendario. Esto se consigue a través del consumo de EventsAPI, una API web que permite a un usuario gestionar eventos de un calendario.
+  version: 1.0.0
+  title: AnimeAPI
+tags:
+  - name: User
+    description: User
+  - name: Animes
+    description: Animes
+  - name: Reviews
+    description: Reviews
+  - name: Events
+    description: Events
+paths:
+  /user:
+    get:
+      tags: 
+        - User
+      summary: Obtener token de usuario
+      description: Obtiene el token de usuario dado nombre de usuario y contraseña a través de parámetros de petición.
+      operationId: getToken
+      parameters: 
+        - name: userName
+          in: query
+          description: Nombre de usuario
+          required: true
+          schema:
+            type: string
+        - name: password
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Token de usuario
+          content:
+            text/plain:
+              schema:
+                type: string
+        '404':
+          description: Not found
+    post:
+      tags: 
+        - User
+      summary: Crear un usuario
+      description: Crea un nuevo usuario mediante el usuario y contraseña pasados en el cuerpo.
+      operationId: addUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/addUser'
+        description: Usuario a crear
+        required: true
+      responses:
+        '201':
+          description: Usuario creado correctamente
+          content:
+            text/plain:
+              schema:
+                type: string
+        '400':
+          description: Bad request
+    
+    put:
+      tags:
+        - User
+      summary: Actualizar contraseña
+      description: Actualiza la contraseña del usuario correspondiente al token de cabecera.
+      operationId: updateUser
+      parameters:
+        - name: token
+          in: header
+          description: Token de usuario
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updatePassword'
+        required: true
+      responses:
+        '204':
+          description: Contraseña actualizada
+        '404':
+          description: Usuario no encontrado
+    delete:
+      tags:
+        - User
+      summary: Eliminar usuario
+      description: Elimina el usuario correspondiente al token pasado como cabecera.
+      operationId: removeUser
+      parameters:
+        - name: token
+          in: header
+          description: Token de usuario
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Usuario eliminado
+        '404':
+          description: Usuario no encontrado
+          
+  
+  /user/{token}:
+    get:
+      tags: 
+        - User
+      summary: Comprobar validez de token
+      description: Devuelve el token pasado como parámetro si este es válido
+      operationId: isValid
+      parameters: 
+        - name: token
+          in: path
+          description: Token de usuario
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Token de usuario correcto
+          content:
+            text/plain:
+              schema:
+                type: string
+        '404':
+          description: Token no válido
+    
+  
+  /animes:
+    get:
+      tags:
+        - Animes
+      summary: Obtener datos de animes
+      description: Obtiene datos de animes. Soporta parámetros de filtrado, ordenación y paginación.
+      operationId: getAll
+      parameters:
+        - name: title
+          in: query
+          description: Filtro por titulo
+          required: true
+          schema:
+            type: string
+        - name: year
+          in: query
+          description: Año de estreno
+          required: false
+          schema:
+            type: integer
+            format: int32
+            
+        
+        - name: mediaType
+          in: query
+          description: Filtro por formato
+          required: false
+          schema:
+            type: string
+            enum: 
+              - tv
+              - movie
+              - special
+        - name: order
+          in: query
+          description: Ordenacion por averageRating
+          required: false
+          schema:
+            type: string
+            enum:
+              - rating
+              - 'rating-'
+        - name: limit
+          in: query
+          description:  Maximo numero de resultados
+          required: false
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+        - name: offset
+          in: query
+          description: Paginacion de resultados
+          required: false
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+      responses:
+        '200':
+          description: Resultados de busqueda
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Anime'
+        '400':
+          description: Bad request - Error on query
+        '404':
+          description: Not found - There were no results matching the criteria
+  
+  '/animes/{animeId}':
+    get:
+      tags:
+        - Animes
+      summary: Obtener datos de un anime 
+      description: Obtener los datos del anime especificado en la ruta.
+      operationId: get
+      parameters:
+        - name: animeId
+          in: path
+          description: idAnime
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Resultados de bÃºsqueda
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Anime'
+                
+        '404':
+          description: Anime no encontrado
+
+  /animes/reviews:
+    get:
+      tags:
+        - Reviews
+      summary: Obtener datos de reseñas
+      description: Obtiene datos de reseñas. Soporta parámetros de filtrado y ordenación.
+      operationId: getAllReviews
+      parameters:
+        - name: idAnime
+          in: query
+          description: Filtro por idAnime
+          required: true
+          schema:
+            type: integer
+        - name: user
+          in: query
+          description: Filtro por nombre de usuario
+          required: false
+          schema:
+            type: string
+            
+        - name: year
+          in: query
+          description: Filtro por año de publicación
+          required: false
+          schema:
+            type: integer
+        - name: order
+          in: query
+          description: Ordenación por comentarios positivos o negativos
+          required: false
+          schema:
+            type: string
+            enum:
+              - positivos
+              - negativos
+      responses:
+        '200':
+          description: Resultados de búsqueda
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Review'
+        '400':
+          description: Bad request
+        '404':
+          description: Reseñas no encontradas
+    post:
+      tags:
+        - Reviews
+      summary: Crear una reseña
+      description: Crea una nueva reseÃ±a.
+      operationId: addReview
+      parameters: 
+        - name: token
+          in: header
+          description: Token de usuario
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/addReview'
+        description: Reseña a crear
+        required: true
+      responses:
+        '201':
+          description: Reseña creada correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+        '400':
+          description: Bad request
+  '/animes/reviews/{reviewId}':
+    get:
+      tags:
+        - Reviews
+      summary: Obtener datos de una reseña 
+      description: Obtener los datos de la reseña especificada en la ruta.
+      operationId: getReview
+      parameters:
+        - name: reviewId
+          in: path
+          description: reviewId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Resultados de búsqueda
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+                
+        '404':
+          description: Reseña no encontrada
+    
+    put:
+      tags:
+          - Reviews
+      summary: Actualizar una reseña
+      description: Actualiza los datos de la reseña con reviewId especificado en la ruta
+      operationId: updateReview
+      parameters:
+        - name: token
+          in: header
+          description: Token de usuario
+          required: true
+          schema:
+            type: string
+        - name: reviewId
+          in: path
+          description: Id de la reseña
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateReview'
+        required: true
+      responses:
+        '204':
+          description: Reseña actualizada
+        '404':
+          description: Reseña no encontrada
+        '400':
+          description: Bad request - Token incorrecto
+    delete:
+      tags:
+        - Reviews
+      summary: Eliminar una reseña
+      description: Eliminar la reseña con reviewId especificado en la ruta
+      operationId: removeReview
+      parameters:
+        - name: token
+          in: header
+          description: Token de usuario
+          required: true
+          schema:
+            type: string
+        - name: reviewId
+          in: path
+          description: Id de la reseña
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Reseña eliminada
+        '404':
+          description: Reseña no encontrada
+        '400':
+          description: Bad request - Token incorrecto
+  
+  /user/events:
+    get:
+      tags:
+        - Events
+      summary: Obtener datos de eventos de usuario
+      description: Obtener los datos de los eventos planeados por el usuario
+      operationId: getEvents
+      parameters:
+        - name: token
+          in: header
+          description: Token de usuario
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Resultados de búsqueda
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Event'
+                
+        '404':
+          description: Eventos no encontrados
+    post:
+      tags: 
+        - Events
+      summary: Crear un evento de próximo estreno
+      description: Crea un evento con el próximo estreno de episodio del anime cuya id es pasada como parámetro de petición
+      operationId: addEvent
+      parameters:
+        - name: token
+          in: header
+          description: Token de usuario
+          required: true
+          schema:
+            type: string
+        - name: animeId
+          in: query
+          description: Id del anime
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Evento creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+                
+        '404':
+          description: Anime no encontrado
+        '400': 
+          description: Bad request
+        '500': 
+          description: Error al crear el evento En EventsAPI
+  /user/events/{eventId}:
+    delete:
+      tags:
+        - Events
+      summary: Eliminar un evento
+      description: Eliminar el evento con eventId especificado en la ruta
+      operationId: removeEvent
+      parameters:
+        - name: token
+          in: header
+          description: Token de usuario
+          required: true
+          schema:
+            type: string
+        - name: eventId
+          in: path
+          description: Id del evento
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Evento eliminado
+        '404':
+          description: Evento no encontrado
+        '400':
+          description: Bad request - Token incorrecto
+    
+components:
+  schemas:
+    Event:
+      type: object
+      properties:
+        eventName:
+          type: string
+        description: 
+          type: string
+        city:
+          type: string
+        date: 
+          type: string
+        time:
+          type: string
+    updatePassword:
+      type: object
+      properties:
+        password:
+          type: string
+      
+    addUser:
+      type: object
+      properties:
+        userName:
+          type: string
+        password:
+          type: string
+    Anime:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        mainPicture:
+          type: object
+        startDate:
+          type: string
+        endDate:
+          type: string
+        mediaType: 
+          type: string
+          enum: 
+              - tv
+              - movie
+              - special
+        status: 
+          type: string
+        numEpisodes:
+          type: integer
+        startSeason:
+          type: object
+        broadcast:
+          type: object
+        averageRating:
+          type: number
+      example:
+        id: 21
+        title: "One Piece"
+        year: "2017"
+        startDate: "1999-10-20"
+        endDate: null
+        mediaType: "tv"
+        status: "currently_airing"
+        numEpisodes: 0
+      
+      
+    Review:
+      type: object
+      properties:
+        id:
+          type: string
+        idAnime:
+          type: integer
+        userName:
+          type: string
+        comment:
+          type: string
+        rating:
+          type: integer
+        date:
+          type: object
+      example: 
+        id: "r65"
+        idAnime: 7
+        userName: "Mellicent"
+        comment: "Aliquam quis turpis eget elit sodales scelerisque. Mauris sit amet eros. Suspendisse accumsan tortor quis turpis.;"
+        rating: 5
+        date: {}
+    
+    addReview:
+      type: object
+      properties:
+        idAnime:
+          type: integer
+        userName:
+          type: string
+        comment:
+          type: string
+        rating:
+          type: integer
+      example: 
+        idAnime: 6
+        userName: "Mellicent"
+        comment: "Aliquam quis turpis eget elit sodales scelerisque. Mauris sit amet eros. Suspendisse accumsan tortor quis turpis.;"
+        rating: 5
+    updateReview:
+      type: object
+      properties:
+        comment:
+          type: string
+        rating:
+          type: integer
+      example: 
+        comment: "Aliquam quis turpis eget elit sodales scelerisque. Mauris sit amet eros. Suspendisse accumsan tortor quis turpis.;"
+        rating: 5
