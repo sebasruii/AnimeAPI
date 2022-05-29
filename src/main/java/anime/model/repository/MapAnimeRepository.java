@@ -47,11 +47,24 @@ public class MapAnimeRepository implements AnimeRepository{
 		userMapToken = new HashMap<String, User>();
 		userMapUsername = new HashMap<String, User>();
 		
+		User u = new User();
+		u.setUserName("pruebaJUnit");
+		u.setPassword("1234");
+		u.setToken("1234");
+		userMapToken.put(u.getToken(), u);
+		userMapUsername.put(u.getUserName(), u);
+		
 		userCal = new UserCalendar();
 		userCal.setUsername("AnimeAPI");
 		userCal.setPassword("AnimeAPI123");
 		
-		List<Review> reviews = leerReview("ReviewsOficial.csv", true);
+		List<Review> reviews = null;
+		try {
+			reviews = leerReview("ReviewsOficial.csv", true);
+		} catch (Exception e) {
+			reviews = new ArrayList<Review>();
+		}
+		
 	
 		
 		

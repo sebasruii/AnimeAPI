@@ -41,7 +41,7 @@ public class EventResource {
 	public static EventResource _instance=null;
 	AnimeRepository repository;
 	
-	private EventResource() {
+	public EventResource() {
 		repository = MapAnimeRepository.getInstance();
 		
 	}
@@ -92,6 +92,7 @@ public class EventResource {
 		
 		
 		try {
+			cr.setEntityBuffering(true);
 			EventoResp response = cr.post(event, EventoResp.class);
 			return response.getEvent();
 		}catch (ResourceException re) {
@@ -127,6 +128,7 @@ public class EventResource {
             cr.setChallengeResponse(authHeader);
             
             try {
+            	cr.setEntityBuffering(true);
             	events = cr.get(Event[].class);
 			} catch (Exception e) {
 				events = null;
